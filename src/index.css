@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ─── FC Minimal — local woff2 only, never CDN ─────────── */
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-ExtraLight-ver-110.woff2') format('woff2'); font-weight: 200; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-ExtraLight-Italic-ver-110.woff2') format('woff2'); font-weight: 200; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Light-ver-110.woff2') format('woff2'); font-weight: 300; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Light-Italic-ver-110.woff2') format('woff2'); font-weight: 300; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Regular-ver-110.woff2') format('woff2'); font-weight: 400; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Italic-ver-110.woff2') format('woff2'); font-weight: 400; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Medium-ver-110.woff2') format('woff2'); font-weight: 500; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Medium-Italic-ver-110.woff2') format('woff2'); font-weight: 500; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Bold-ver-110.woff2') format('woff2'); font-weight: 700; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Bold-Italic-ver-110.woff2') format('woff2'); font-weight: 700; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-ExtraBold-ver-110.woff2') format('woff2'); font-weight: 800; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-ExtraBold-Italic-ver-110.woff2') format('woff2'); font-weight: 800; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Black-ver-110.woff2') format('woff2'); font-weight: 900; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'FC Minimal'; src: url('./assets/fonts/FC-Minimal-Black-Italic-ver-110.woff2') format('woff2'); font-weight: 900; font-style: italic;  font-display: swap; }
+
+/* ─── Online Asset Design System — CSS Variables ────────── */
+:root {
+  --oa-green:       #78c045;
+  --oa-green-dark:  #5a9030;
+  --oa-green-light: #f0f9e8;
+  --oa-green-mid:   #c6e8a3;
+  --oa-bg:          #ffffff;
+  --oa-surface:     #f6f6f6;
+  --oa-text:        #333333;
+  --oa-text-sec:    #474747;
+  --oa-text-dim:    #888888;
+  --oa-border:      #e0e0e0;
+  --oa-radius:      10px;
+  --oa-shadow:      rgba(0,0,0,0.05) 0px 10px 20px 0px;
+  --oa-shadow-mid:  rgba(0,0,0,0.1) 0px 5px 10px 0px;
+}
+
+@layer base {
+  body {
+    @apply antialiased m-0;
+    background-color: var(--oa-surface);
+    font-family: 'FC Minimal', 'Sarabun', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+    color: var(--oa-text);
+  }
+}
+
+/* ─── Shared utility overrides ──────────────────────────── */
+.oa-card {
+  background: var(--oa-bg);
+  border-radius: var(--oa-radius);
+  border: 1px solid var(--oa-border);
+  box-shadow: var(--oa-shadow);
+}
+.oa-btn-primary {
+  background: var(--oa-green);
+  color: #ffffff;
+  border-radius: var(--oa-radius);
+  border: none;
+  padding: 8px 16px;
+  font-family: 'FC Minimal', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+/* ─── Dept Org Chart — dark thin scrollbar (VS Code style) ─ */
+.dept-chart-scroll::-webkit-scrollbar              { height: 8px; }
+.dept-chart-scroll::-webkit-scrollbar-track        { background: #2d2d2d; }
+.dept-chart-scroll::-webkit-scrollbar-thumb        { background: #6e6e6e; border-radius: 2px; }
+.dept-chart-scroll::-webkit-scrollbar-thumb:hover  { background: #909090; }
+
+.oa-btn-primary:hover { background: var(--oa-green-dark); }
+.oa-input {
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius);
+  padding: 8px 12px;
+  font-family: 'FC Minimal', sans-serif;
+  font-size: 14px;
+  outline: none;
+  background: var(--oa-bg);
+  color: var(--oa-text);
+}
+.oa-input:focus { border-color: var(--oa-green); box-shadow: 0 0 0 2px rgba(120,192,69,0.15); }

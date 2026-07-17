@@ -1,0 +1,18 @@
+{
+  "appId": "com.efin.hr-system",
+  "productName": "EFIN HR System",
+  "directories": {
+    "output": "electron-dist"
+  },
+  "files": [
+    "dist/**/*",
+    "electron/**/*"
+  ],
+  "win": {
+    "target": "portable",
+    "icon": "electron/icon.png"
+  },
+  "portable": {
+    "artifactName": "EFIN-HR-System.exe"
+  }
+}
