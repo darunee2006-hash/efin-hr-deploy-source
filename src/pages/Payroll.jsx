@@ -20,6 +20,17 @@ const formatNumber = (num) => {
 // Format number with comma only
 const formatCurrency = (num) => num.toLocaleString('th-TH');
 
+// Mask individual salary for privacy — keep the last 3 digits visible, mask the rest
+// e.g. 25,500 -> xx,500 · 1,250,500 -> x,xxx,500
+const maskSalary = (num) => {
+  if (num === null || num === undefined || isNaN(num)) return '-';
+  const parts = Math.round(num).toLocaleString('th-TH').split(',');
+  return parts.map((p, i) => (i === parts.length - 1 ? p : 'x'.repeat(p.length))).join(',');
+};
+
+// Thai month names — must match the bare month text stored in hr_cost_employee.period_month
+const MONTH_TH = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
 // ── Provident Fund (PVD) — กองทุนสำรองเลี้ยงชีพ ──
 // อัตราสมทบ (แบบขั้นบันได ตามอายุสมาชิกภาพ) — นายจ้างสมทบเท่ากับพนักงาน
 const PVD_CONTRIBUTION_TIERS = [
@@ -69,8 +80,10 @@ function getPvdTierLabel(yearsOfService, lang) {
     : `${pct}% (${yrs} yrs)`;
 }
 
-// Generate mock payroll data from employees
-const generateMockPayrollData = (employees, month, year) => {
+// Generate payroll data from employees — uses real imported cost data (hr_cost_employee)
+// when available for the selected month (matched by employee_code), falls back to an
+// estimate formula only when no real record exists for that employee/month.
+const generateMockPayrollData = (employees, month, year, costMap = {}) => {
   const salaryGrades = {
     'G3': 18000,
     'G4': 25000,
@@ -84,24 +97,32 @@ const generateMockPayrollData = (employees, month, year) => {
   const asOfDate = new Date(year, month - 1, 1);
 
   return employees.map(emp => {
-    const salary = Number(emp.base_salary) || salaryGrades[emp.level] || 25000;
-    const sso = Math.min(salary * 0.05, 750);
+    const real = costMap[emp.employee_code];
 
     // PVD calculation — อายุสมาชิกภาพ (ใช้ hire_date เป็นฐาน)
     const yearsOfService = calcYearsOfService(emp.hire_date, asOfDate);
     const pvdRate = getPvdRate(yearsOfService);
-    const pvdEmployee = Math.round(salary * pvdRate);    // เงินสะสม (พนักงาน)
-    const pvdEmployer = Math.round(salary * pvdRate);    // เงินสมทบ (นายจ้าง)
     const vestingPct = getVestingPct(yearsOfService);    // สิทธิ์รับเงินสมทบนายจ้าง
+    const pvdEmployee = 0;    // ไม่มีข้อมูลจริงระดับพนักงานรายเดือน แสดง 0.00 เสมอ
 
-    // Progressive tax (simplified) — PVD ลดหย่อนภาษีได้
-    const taxableIncome = salary - sso - pvdEmployee;
-    let tax = 0;
-    if (taxableIncome > 50000) {
-      tax = (taxableIncome - 50000) * 0.05;
+    let salary, sso, pvdEmployer, ot;
+    if (real) {
+      // ข้อมูลจริงจาก hr_cost_employee (นำเข้าจากไฟล์เดือน/ปีที่เลือก)
+      salary = Number(real.salary) || 0;
+      sso = Number(real.social_security) || 0;
+      pvdEmployer = Number(real.provident_fund) || 0;
+      ot = Number(real.overtime) || 0;
+    } else {
+      // ไม่มีข้อมูลจริงสำหรับพนักงาน/เดือนนี้ — ใช้ค่าประมาณการ
+      salary = Number(emp.base_salary) || salaryGrades[emp.level] || 25000;
+      sso = Math.min(salary * 0.05, 750);
+      pvdEmployer = Math.round(salary * pvdRate);
+      ot = 0;    // ไม่มีแหล่งข้อมูลจริง จึงไม่สุ่ม/คำนวณเอง
     }
 
-    const ot = Math.floor(Math.random() * 15000);
+    // ภาษีหัก ณ ที่จ่าย — ไม่มีข้อมูลจริง แสดง 0.00 เสมอ (ไม่คำนวณเอง)
+    const tax = 0;
+
     const net = salary + ot - sso - pvdEmployee - tax;
 
     const fullName = (lang) => {
@@ -133,6 +154,7 @@ const generateMockPayrollData = (employees, month, year) => {
       ot: ot,
       net: net,
       status: 'calculated',
+      data_source: real ? 'real' : 'estimate',
       pay_period: `${year}-${String(month).padStart(2, '0')}-01`,
     };
   });
@@ -185,6 +207,18 @@ export default function Payroll({ lang }) {
           .select('*')
           .eq('pay_period', payPeriod);
 
+        // Fetch real imported cost data for the selected month (hr_cost_employee),
+        // matched to employees by employee_code — used to fill in real salary/SSO/
+        // PVD(employer)/OT figures when hr_payroll itself has no rows for the period.
+        const monthNameTh = MONTH_TH[selectedMonth - 1];
+        const { data: costData } = await supabase
+          .from('hr_cost_employee')
+          .select('employee_id, salary, social_security, provident_fund, overtime')
+          .eq('period_month', monthNameTh);
+
+        const costMap = {};
+        (costData || []).forEach(c => { costMap[c.employee_id] = c; });
+
         if (payData && payData.length > 0) {
           const empMap = {};
           enriched.forEach(e => { empMap[e.id] = e; });
@@ -223,7 +257,7 @@ export default function Payroll({ lang }) {
           });
           setPayrollData(merged);
         } else {
-          const mockPayroll = generateMockPayrollData(enriched, selectedMonth, selectedYear);
+          const mockPayroll = generateMockPayrollData(enriched, selectedMonth, selectedYear, costMap);
           setPayrollData(mockPayroll);
         }
       } catch (error) {
@@ -660,16 +694,16 @@ export default function Payroll({ lang }) {
                           </div>
                         </td>
                         <td className="px-2 py-2 text-right text-gray-500 text-xs">{yrs} {T(lang, 'ปี', 'y')}</td>
-                        <td className="px-2 py-2 text-right text-gray-900 font-medium">{formatCurrency(item.salary)}</td>
-                        <td className="px-2 py-2 text-right text-gray-600">{formatCurrency(item.sso)}</td>
+                        <td className="px-2 py-2 text-right text-gray-900 font-medium">{maskSalary(item.salary)}</td>
+                        <td className="px-2 py-2 text-right text-gray-600">{maskSalary(item.sso)}</td>
                         <td className="px-2 py-2 text-right text-purple-700 font-medium">
-                          <span>{formatCurrency(item.pvd_employee)}</span>
+                          <span>{maskSalary(item.pvd_employee)}</span>
                           <span className="text-[10px] text-purple-400 ml-0.5">({pvdPct}%)</span>
                         </td>
-                        <td className="px-2 py-2 text-right text-purple-400 text-xs">{formatCurrency(item.pvd_employer)}</td>
-                        <td className="px-2 py-2 text-right text-gray-600">{formatCurrency(item.tax)}</td>
-                        <td className="px-2 py-2 text-right text-orange-600 font-medium">{formatCurrency(item.ot)}</td>
-                        <td className="px-2 py-2 text-right text-green-600 font-bold">{formatCurrency(item.net)}</td>
+                        <td className="px-2 py-2 text-right text-purple-400 text-xs">{maskSalary(item.pvd_employer)}</td>
+                        <td className="px-2 py-2 text-right text-gray-600">{maskSalary(item.tax)}</td>
+                        <td className="px-2 py-2 text-right text-orange-600 font-medium">{maskSalary(item.ot)}</td>
+                        <td className="px-2 py-2 text-right text-green-600 font-bold">{maskSalary(item.net)}</td>
                       </tr>
                     );
                   })}
