@@ -833,7 +833,12 @@ export default function Dashboard({ lang }) {
               onChange={e => {
                 if (!e.target.value) return
                 const [y, m, d] = e.target.value.split('-').map(Number)
-                setAsOfDate(new Date(y, m - 1, d))
+                let picked = new Date(y, m - 1, d)
+                const [minY, minM, minD] = MIN_AS_OF_DATE.split('-').map(Number)
+                const minDate = new Date(minY, minM - 1, minD)
+                if (picked < minDate) picked = minDate       // clamp: cannot go earlier than 2024-01-01
+                if (picked > realToday) picked = realToday   // clamp: cannot pick a future date
+                setAsOfDate(picked)
               }}
               className="font-medium bg-transparent border-none outline-none text-gray-700 cursor-pointer p-0"
             />
