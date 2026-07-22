@@ -584,12 +584,6 @@ export default function Dashboard({ lang }) {
 
     const newHires = allEmployees.filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date).getFullYear() === cy).length
 
-    // พนักงานที่ออกทั้งหมด (ทุกประเภท) — ใช้คำนวณ headcount ต้นปีเท่านั้น
-    const allDeparted = allEmployees.filter(e => {
-      const d = e.resignation_date ? new Date(e.resignation_date) : null
-      return d && d.getFullYear() === cy
-    }).length
-
     // ลาออกเอง = status 'resigned' + ไม่ใช่ระหว่างทดลองงาน (>= 90 วัน) + ไม่ใช่ Layoff ('terminated')
     const resigned = allEmployees.filter(e => {
       if (e.status !== 'resigned') return false                          // ตัด terminated (Layoff)
@@ -600,10 +594,14 @@ export default function Dashboard({ lang }) {
       return true
     }).length
 
-    const beginCount   = total + allDeparted - newHires                 // ใช้ allDeparted เพื่อ headcount ถูกต้อง
-    const avgHead      = (beginCount + total) / 2
-    const turnoverRate = avgHead > 0 ? Math.round((resigned / avgHead) * 1000) / 10 : 0
-    const momPct       = total > 0   ? Math.round((newHires / total) * 10000) / 100  : 0
+    // ไม่ผ่านทดลองงาน = status 'resigned' + ลาออกระหว่างทดลองงาน (< 90 วันนับจากวันเริ่มงาน)
+    const notPassProbation = allEmployees.filter(e => {
+      if (e.status !== 'resigned') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }).length
 
     const terminated = allEmployees.filter(e => {
       if (e.status !== 'terminated') return false
@@ -611,7 +609,27 @@ export default function Dashboard({ lang }) {
       return rd && rd.getFullYear() === cy
     }).length
 
-    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, terminated, turnoverRate, momPct }
+    // จำนวนพนักงานคงเหลือ ณ วันที่ 31 ธันวาคมของปีก่อนหน้า (snapshot จริง ไม่ใช่คำนวณย้อนกลับ)
+    // = คนที่เริ่มงานมาแล้วก่อน/เท่ากับวันนั้น และยังไม่ออก (หรือออกหลังวันนั้น)
+    const yearEndPrev = new Date(cy - 1, 11, 31, 23, 59, 59)
+    const beginCount = allEmployees.filter(e => {
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (!hd || hd > yearEndPrev) return false
+      if (e.status === 'resigned' || e.status === 'terminated') {
+        const rd = e.resignation_date ? new Date(e.resignation_date) : null
+        if (rd && rd <= yearEndPrev) return false
+      }
+      return true
+    }).length
+
+    // ยอดพนักงานปัจจุบัน (วันนี้) ตามสูตร = ต้นปี + เข้าใหม่ - ลาออก - ไม่ผ่านทดลองงาน - พ้นสภาพ
+    const netChangeYTD = newHires - resigned - notPassProbation - terminated
+    const currentByFormula = beginCount + netChangeYTD
+    const avgHead      = (beginCount + total) / 2
+    const turnoverRate = avgHead > 0 ? Math.round((resigned / avgHead) * 1000) / 10 : 0
+    const ytdPct       = beginCount > 0 ? Math.round((netChangeYTD / beginCount) * 10000) / 100 : 0
+
+    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, notPassProbation, terminated, turnoverRate, beginCount, netChangeYTD, currentByFormula, ytdPct }
   }, [employees, allEmployees, cy])
 
   // ── YTD lists (for panels) ────────────────────────────────────────────────────
@@ -821,8 +839,8 @@ export default function Dashboard({ lang }) {
           icon={Users} bgColor="bg-blue-100" iconColor="text-blue-600"
           label="พนักงานทั้งหมด"
           value={`${kpis.total.toLocaleString()} คน`}
-          trend={`เพิ่มขึ้น ${kpis.newHires} คน (${kpis.momPct}%) จากเดือนก่อนหน้า`}
-          trendDir="up"
+          trend={`พนักงาน${kpis.netChangeYTD >= 0 ? 'เพิ่ม' : 'ลดลง'} ${Math.abs(kpis.netChangeYTD)} คน (${Math.abs(kpis.ytdPct)}%) จากต้นปี`}
+          trendDir={kpis.netChangeYTD >= 0 ? 'up' : 'down'}
           onClick={() => openPanel('พนักงานทั้งหมด', `Active ${employees.length} คน`, employees)}
         />
         <KpiCard
