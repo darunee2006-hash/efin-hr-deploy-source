@@ -232,8 +232,12 @@ function SlidePanel({ panel, onClose }) {
                           {initial}
                         </div>
                         <div className="min-w-0">
-                          <div className="font-medium text-gray-800 truncate max-w-[150px]" title={name}>
+                          <div
+                            className="font-medium text-gray-800 truncate max-w-[150px]"
+                            title={e.nickname ? `${name} (${e.nickname})` : name}
+                          >
                             {name}
+                            {e.nickname && <span className="text-gray-400 font-normal ml-1">({e.nickname})</span>}
                           </div>
                           <div className="text-gray-400">{e.employee_code || '-'}</div>
                         </div>
