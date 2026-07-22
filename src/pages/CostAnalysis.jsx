@@ -335,6 +335,20 @@ export default function CostAnalysis(){
   // ========== Employee Cost % of Total Company Cost ==========
   const empCostPct = totalCompanyCost>0 ? (totalCost/totalCompanyCost*100) : null
 
+  // Monthly totals for bar chart (respects BU filter, but shows all months)
+  const monthlyData = useMemo(()=>{
+    let d=costEmp
+    if(filterBU!=='all') d=d.filter(r=>empBUbyUUID[r.hr_employee_id]===filterBU)
+    const m={}
+    d.forEach(r=>{
+      if(!m[r.period_month]) m[r.period_month]={cost:0,hours:0,people:new Set()}
+      m[r.period_month].cost+=Number(r.total_cost)||0
+      m[r.period_month].hours+=Number(r.work_hours)||0
+      m[r.period_month].people.add(r.employee_id)
+    })
+    return MONTH_ORDER.filter(mn=>m[mn]).map(mn=>({month:mn,short:MONTH_SHORT[MONTH_ORDER.indexOf(mn)],...m[mn],count:m[mn].people.size}))
+  },[costEmp,filterBU,empBUbyUUID])
+
   // ========== MoM Trend Alert ==========
   const trendAlert = useMemo(()=>{
     if(monthlyData.length<3) return null
@@ -362,20 +376,6 @@ export default function CostAnalysis(){
       list.push({id:'A6',sev:'critical',label:'ต้นทุนโตเร็ว',msg:`เพิ่ม 3 เดือนต่อเนื่อง (${trendAlert.months.join(' → ')}) รวม +${trendAlert.growth}%`})
     return list
   },[empCostPct,buCostPerHead,centralData,trendAlert])
-
-  // Monthly totals for bar chart (respects BU filter, but shows all months)
-  const monthlyData = useMemo(()=>{
-    let d=costEmp
-    if(filterBU!=='all') d=d.filter(r=>empBUbyUUID[r.hr_employee_id]===filterBU)
-    const m={}
-    d.forEach(r=>{
-      if(!m[r.period_month]) m[r.period_month]={cost:0,hours:0,people:new Set()}
-      m[r.period_month].cost+=Number(r.total_cost)||0
-      m[r.period_month].hours+=Number(r.work_hours)||0
-      m[r.period_month].people.add(r.employee_id)
-    })
-    return MONTH_ORDER.filter(mn=>m[mn]).map(mn=>({month:mn,short:MONTH_SHORT[MONTH_ORDER.indexOf(mn)],...m[mn],count:m[mn].people.size}))
-  },[costEmp,filterBU,empBUbyUUID])
 
   // BU summary
   const buSummary = useMemo(()=>{
