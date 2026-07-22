@@ -38,6 +38,14 @@ const COLORS_ARR = ['#78c045','#1692dc','#00afab','#f59e0b','#ff5252','#8b5cf6',
 const fmt = n => n?.toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:0}) ?? '0'
 const fmtM = n => { if(!n||n===0) return '0'; if(Math.abs(n)>=1e6) return (n/1e6).toFixed(2)+'M'; if(Math.abs(n)>=1e3) return (n/1e3).toFixed(0)+'K'; return fmt(n) }
 const fmtPct = n => n>0 ? n.toFixed(1)+'%' : '-'
+// Mask per-employee cost figures (same scheme as Payroll.jsx's maskSalary) — hides all digit
+// groups except the last 3 digits, e.g. 1,213,650 → x,xxx,650. Used only for individual
+// (per-employee) totals, not company/department/BU aggregates.
+const maskCost = (num) => {
+  if (num === null || num === undefined || isNaN(num)) return '-'
+  const parts = Math.round(num).toLocaleString('th-TH').split(',')
+  return parts.map((p, i) => (i === parts.length - 1 ? p : 'x'.repeat(p.length))).join(',')
+}
 const mi = m => MONTH_ORDER.indexOf(m)
 
 function Tab({tabs,active,onChange}){
@@ -1458,7 +1466,7 @@ export default function CostAnalysis(){
               <td className="px-3 py-1.5 text-xs text-gray-500">{e.employment_type||'-'}</td>
               <td className="px-3 py-1.5 text-xs"><span className={`px-1.5 py-0.5 rounded ${statusColor}`}>{e.status||'-'}</span></td>
               <td className="px-3 py-1.5 text-xs text-gray-500">{e.hire_date?new Date(e.hire_date).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}):'-'}</td>
-              <td className="px-3 py-1.5 text-right tabular-nums font-semibold text-[#5A9020] bg-[#E6F9F0]">{cost?`฿${fmt(Math.round(cost.totalCost))}`:'-'}</td>
+              <td className="px-3 py-1.5 text-right tabular-nums font-semibold text-[#5A9020] bg-[#E6F9F0]">{cost?`฿${maskCost(cost.totalCost)}`:'-'}</td>
               <td className="px-3 py-1.5 text-right tabular-nums">{cost&&cost.totalHours>0?fmt(Math.round(cost.totalHours)):'-'}</td>
               <td className="px-3 py-1.5 text-right tabular-nums">{cost&&cost.costPerHour>0?`฿${fmt(Math.round(cost.costPerHour))}`:'-'}</td>
             </tr>
@@ -1993,7 +2001,7 @@ export default function CostAnalysis(){
             { label: 'แผนก', key: 'department', render: r=>r.department },
             { label: 'จำนวนเดือน', key: 'months', render: r=>r.months, sortKey: r=>r.months, align:'right' },
             { label: 'ชม.ทำงาน', key: 'hours', render: r=>fmt(Math.round(r.hours)), sortKey: r=>r.hours, align:'right' },
-            { label: 'ต้นทุนรวม', key: 'totalCost', render: r=>'฿'+fmt(Math.round(r.totalCost)), sortKey: r=>r.totalCost, align:'right' },
+            { label: 'ต้นทุนรวม', key: 'totalCost', render: r=>'฿'+maskCost(r.totalCost), sortKey: r=>r.totalCost, align:'right' },
             { label: 'ต้นทุน/ชม.', key: 'costPerHr', render: r=>'฿'+fmt(Math.round(r.costPerHr)), sortKey: r=>r.costPerHr, align:'right' },
           ]
           break
