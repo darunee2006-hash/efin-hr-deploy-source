@@ -678,6 +678,16 @@ export default function Dashboard({ lang }) {
     }),
   [allEmployees, cy, now])
 
+  const notPassProbationList = useMemo(() =>
+    allEmployees.filter(e => {
+      if (e.status !== 'resigned') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }),
+  [allEmployees, cy, now])
+
   // ── Chart data ────────────────────────────────────────────────────────────────
   const deptData = useMemo(() => {
     const map = {}
@@ -1091,10 +1101,26 @@ export default function Dashboard({ lang }) {
               </div>
             </div>
 
+            <div
+              onClick={() => openPanel(`พนักงานไม่ผ่านทดลองงาน (YTD ${cy})`, `ไม่ผ่านทดลองงาน ${notPassProbationList.length} คน ในปี ${cy}`, notPassProbationList)}
+              className="flex items-center justify-between p-3.5 bg-yellow-50 rounded-xl cursor-pointer hover:bg-yellow-100 active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                  <UserMinus className="w-4 h-4 text-yellow-600" />
+                </div>
+                <span className="text-sm text-gray-700 font-medium">ไม่ผ่านทดลองงาน</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xl font-bold text-yellow-600">{kpis.notPassProbation} คน</span>
+                <ChevronRight className="w-4 h-4 text-yellow-400" />
+              </div>
+            </div>
+
             <div className="flex items-center justify-between pt-3 mt-1 border-t border-gray-100">
               <span className="text-sm font-bold text-gray-800">สุทธิ</span>
-              <span className={`text-2xl font-bold ${kpis.newHires - kpis.resigned - kpis.terminated >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {kpis.newHires - kpis.resigned - kpis.terminated >= 0 ? '+' : ''}{kpis.newHires - kpis.resigned - kpis.terminated} คน
+              <span className={`text-2xl font-bold ${kpis.netChangeYTD >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {kpis.netChangeYTD >= 0 ? '+' : ''}{kpis.netChangeYTD} คน
               </span>
             </div>
           </div>
