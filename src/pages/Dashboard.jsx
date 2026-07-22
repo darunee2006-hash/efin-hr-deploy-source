@@ -616,8 +616,8 @@ export default function Dashboard({ lang }) {
       return true
     }).length
 
-    // ไม่ผ่านทดลองงาน = status 'resigned' + ลาออกระหว่างทดลองงาน (< 90 วันนับจากวันเริ่มงาน)
-    const notPassProbation = allEmployees.filter(e => {
+    // ลาออกระหว่างทดลองงาน = "ลาออกเอง" (status 'resigned') แต่ยังไม่ครบ 90 วัน — เป็นการตัดสินใจของพนักงานเอง
+    const probationQuit = allEmployees.filter(e => {
       if (e.status !== 'resigned') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
       if (!rd || rd.getFullYear() !== cy || rd > now) return false
@@ -625,10 +625,23 @@ export default function Dashboard({ lang }) {
       return hd && (rd - hd) < 90 * 864e5
     }).length
 
+    // พ้นสภาพ (Layoff) = บริษัทเลิกจ้าง (status 'terminated') หลังผ่านทดลองงานแล้ว (>= 90 วัน)
     const terminated = allEmployees.filter(e => {
       if (e.status !== 'terminated') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      return rd && rd.getFullYear() === cy && rd <= now
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (hd && (rd - hd) < 90 * 864e5) return false                   // ตัดไม่ผ่านทดลองงานออก
+      return true
+    }).length
+
+    // ไม่ผ่านทดลองงาน = บริษัทเป็นฝ่ายเลิกจ้าง (status 'terminated') ระหว่างช่วงทดลองงาน (< 90 วัน) — คนละกรณีกับลาออกเอง
+    const notPassProbation = allEmployees.filter(e => {
+      if (e.status !== 'terminated') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
     }).length
 
     // จำนวนพนักงานคงเหลือ ณ วันที่ 31 ธันวาคมของปีก่อนหน้า (snapshot จริง ไม่ใช่คำนวณย้อนกลับ)
@@ -644,14 +657,14 @@ export default function Dashboard({ lang }) {
       return true
     }).length
 
-    // ยอดพนักงานปัจจุบัน (วันนี้) ตามสูตร = ต้นปี + เข้าใหม่ - ลาออก - ไม่ผ่านทดลองงาน - พ้นสภาพ
-    const netChangeYTD = newHires - resigned - notPassProbation - terminated
+    // ยอดพนักงานปัจจุบัน (วันนี้) ตามสูตร = ต้นปี + เข้าใหม่ - ลาออก - ลาออกระหว่างทดลองงาน - พ้นสภาพ - ไม่ผ่านทดลองงาน
+    const netChangeYTD = newHires - resigned - probationQuit - terminated - notPassProbation
     const currentByFormula = beginCount + netChangeYTD
     const avgHead      = (beginCount + total) / 2
     const turnoverRate = avgHead > 0 ? Math.round((resigned / avgHead) * 1000) / 10 : 0
     const ytdPct       = beginCount > 0 ? Math.round((netChangeYTD / beginCount) * 10000) / 100 : 0
 
-    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, notPassProbation, terminated, turnoverRate, beginCount, netChangeYTD, currentByFormula, ytdPct }
+    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, probationQuit, notPassProbation, terminated, turnoverRate, beginCount, netChangeYTD, currentByFormula, ytdPct }
   }, [employees, allEmployees, cy, now])
 
   // ── YTD lists (for panels) ────────────────────────────────────────────────────
@@ -670,17 +683,32 @@ export default function Dashboard({ lang }) {
     }),
   [allEmployees, cy, now])
 
+  // ลาออกระหว่างทดลองงาน — พนักงานตัดสินใจลาออกเอง (status 'resigned') ก่อนครบ 90 วัน
+  const probationQuitList = useMemo(() =>
+    allEmployees.filter(e => {
+      if (e.status !== 'resigned') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }),
+  [allEmployees, cy, now])
+
   const terminatedList = useMemo(() =>
     allEmployees.filter(e => {
       if (e.status !== 'terminated') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      return rd && rd.getFullYear() === cy && rd <= now
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (hd && (rd - hd) < 90 * 864e5) return false
+      return true
     }),
   [allEmployees, cy, now])
 
+  // ไม่ผ่านทดลองงาน — บริษัทเป็นฝ่ายเลิกจ้าง (status 'terminated') ระหว่างช่วงทดลองงาน (< 90 วัน)
   const notPassProbationList = useMemo(() =>
     allEmployees.filter(e => {
-      if (e.status !== 'resigned') return false
+      if (e.status !== 'terminated') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
       if (!rd || rd.getFullYear() !== cy || rd > now) return false
       const hd = e.hire_date ? new Date(e.hire_date) : null
@@ -1082,6 +1110,22 @@ export default function Dashboard({ lang }) {
               <div className="flex items-center gap-1">
                 <span className="text-xl font-bold text-red-500">{kpis.resigned} คน</span>
                 <ChevronRight className="w-4 h-4 text-red-400" />
+              </div>
+            </div>
+
+            <div
+              onClick={() => openPanel(`พนักงานลาออกระหว่างทดลองงาน (YTD ${cy})`, `ลาออกระหว่างทดลองงาน ${probationQuitList.length} คน ในปี ${cy}`, probationQuitList)}
+              className="flex items-center justify-between p-3.5 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                  <UserMinus className="w-4 h-4 text-orange-600" />
+                </div>
+                <span className="text-sm text-gray-700 font-medium">ลาออกระหว่างทดลองงาน</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xl font-bold text-orange-600">{kpis.probationQuit} คน</span>
+                <ChevronRight className="w-4 h-4 text-orange-400" />
               </div>
             </div>
 
