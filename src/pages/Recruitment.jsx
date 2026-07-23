@@ -922,13 +922,26 @@ export default function Recruitment({ lang }) {
   const persons = useMemo(() => Array.from(new Set(data.map(r => r.responsible_person).filter(Boolean))).sort(), [data]);
 
   /* ─── Filtered rows ─────────────────────────────────────── */
-  const filtered = useMemo(() => data.filter(r => {
-    const dOk = filterDept === 'all'   || r.department_name    === filterDept;
-    const pOk = filterPerson === 'all' || r.responsible_person === filterPerson;
-    const sOk = filterStatus === 'all' || r.status             === filterStatus;
-    const tOk = filterType === 'all'   || r.recruitment_type   === filterType;
-    return dOk && pOk && sOk && tOk;
-  }), [data, filterDept, filterPerson, filterStatus, filterType]);
+  // ลำดับสถานะสำหรับจัดเรียงตาราง: เปิดรับ/อยู่ระหว่างดำเนินการขึ้นก่อน ตามด้วยปิดแล้ว/ยกเลิก
+  const STATUS_SORT_ORDER = {
+    open: 0, screening: 1, interviewing: 2, offering: 3,
+    on_hold: 4, draft: 5, filled: 6, cancelled: 7,
+  };
+  const filtered = useMemo(() => data
+    .filter(r => {
+      const dOk = filterDept === 'all'   || r.department_name    === filterDept;
+      const pOk = filterPerson === 'all' || r.responsible_person === filterPerson;
+      const sOk = filterStatus === 'all' || r.status             === filterStatus;
+      const tOk = filterType === 'all'   || r.recruitment_type   === filterType;
+      return dOk && pOk && sOk && tOk;
+    })
+    .sort((a, b) => {
+      const oa = STATUS_SORT_ORDER[a.status] ?? 99;
+      const ob = STATUS_SORT_ORDER[b.status] ?? 99;
+      if (oa !== ob) return oa - ob;
+      // ภายในสถานะเดียวกัน เรียงวันที่เปิดรับล่าสุดขึ้นก่อน
+      return new Date(b.open_date || 0) - new Date(a.open_date || 0);
+    }), [data, filterDept, filterPerson, filterStatus, filterType]);
 
   const hasFilter = filterDept !== 'all' || filterPerson !== 'all' || filterStatus !== 'all' || filterType !== 'all';
 
