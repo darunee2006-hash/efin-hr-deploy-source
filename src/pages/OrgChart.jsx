@@ -378,7 +378,7 @@ function BUOrgTree({ buTreeData, selectedBU, setSelectedBU, filtered, deptMap, l
 
         return (
           <div key={company}>
-            <div className="overflow-x-auto pb-2">
+            <div className="org-hscroll pb-2">
               <div className="relative mx-auto" style={{ width: W, height: svgH }}>
 
                 {/* SVG connector lines */}
@@ -702,13 +702,8 @@ function DeptOrgChart({ deptName, employees, lang }) {
         </span>
       </div>
 
-      {/* Scrollable canvas — scrollbar styled via index.css .dept-chart-scroll */}
-      <div className="dept-chart-scroll" style={{
-        overflowX: 'auto',
-        overflowY: 'visible',
-        scrollbarWidth: 'thin',
-        scrollbarColor: '#6e6e6e #2d2d2d',
-      }}>
+      {/* Scrollable canvas — always-visible horizontal scrollbar styled via index.css .org-hscroll */}
+      <div className="org-hscroll">
         <svg
           width={svgW}
           height={svgH}

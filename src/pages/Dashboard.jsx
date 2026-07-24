@@ -44,6 +44,22 @@ function isValidHireDate(dateStr) {
   return y >= 1980 && y <= 2100
 }
 
+// yyyy-mm-dd (for <input type="date">) using local time, not UTC
+function isoDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+// Was this employee still on the payroll (hired, not yet departed) as of a given point in time?
+function isActiveAsOf(e, asOf) {
+  const hd = e.hire_date ? new Date(e.hire_date) : null
+  if (!hd || hd > asOf) return false
+  if (e.status === 'resigned' || e.status === 'terminated') {
+    const rd = e.resignation_date ? new Date(e.resignation_date) : null
+    if (rd && rd <= asOf) return false
+  }
+  return true
+}
+
 function isMale(e)   { return ['M','m','male','Male','ชาย'].includes(e.gender) }
 function isFemale(e) { return ['F','f','female','Female','หญิง'].includes(e.gender) }
 
@@ -232,8 +248,12 @@ function SlidePanel({ panel, onClose }) {
                           {initial}
                         </div>
                         <div className="min-w-0">
-                          <div className="font-medium text-gray-800 truncate max-w-[150px]" title={name}>
+                          <div
+                            className="font-medium text-gray-800 truncate max-w-[150px]"
+                            title={e.nickname ? `${name} (${e.nickname})` : name}
+                          >
                             {name}
+                            {e.nickname && <span className="text-gray-400 font-normal ml-1">({e.nickname})</span>}
                           </div>
                           <div className="text-gray-400">{e.employee_code || '-'}</div>
                         </div>
@@ -440,9 +460,13 @@ export default function Dashboard({ lang }) {
   const [panel, setPanel] = useState({ open: false, title: '', subtitle: '', rows: [] })
   const [rhSortKey, setRhSortKey] = useState('hire')
   const [rhSortDir, setRhSortDir] = useState('desc')
+  const [asOfDate, setAsOfDate] = useState(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d })
 
-  const now = new Date()
+  const realToday = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d }, [])
+  const isToday   = asOfDate.getTime() === realToday.getTime()
+  const now = asOfDate
   const cy  = now.getFullYear()
+  const MIN_AS_OF_DATE = '2024-01-01'
 
   // ── Fetch ────────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -484,12 +508,14 @@ export default function Dashboard({ lang }) {
   }, [baseActive])
 
   // ── Apply dashboard filters ───────────────────────────────────────────────────
+  // When viewing a past "as of" date, reconstruct who was actually on payroll that day
+  // instead of just using today's live active list.
   const employees = useMemo(() => {
-    let list = baseActive
+    let list = isToday ? baseActive : baseAll.filter(e => isActiveAsOf(e, asOfDate))
     if (buFilter   !== 'ทั้งหมด') list = list.filter(e => (e.bu || e.company_entity || 'N/A') === buFilter)
     if (deptFilter !== 'ทั้งหมด') list = list.filter(e => (e.department_name_th || 'N/A') === deptFilter)
     return list
-  }, [baseActive, buFilter, deptFilter])
+  }, [baseActive, baseAll, buFilter, deptFilter, isToday, asOfDate])
 
   const allEmployees = useMemo(() => {
     let list = baseAll
@@ -578,61 +604,117 @@ export default function Dashboard({ lang }) {
       : 0
     const medianTenure  = calcMedian(tenureValues)
 
-    const newHires = allEmployees.filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date).getFullYear() === cy).length
-
-    // พนักงานที่ออกทั้งหมด (ทุกประเภท) — ใช้คำนวณ headcount ต้นปีเท่านั้น
-    const allDeparted = allEmployees.filter(e => {
-      const d = e.resignation_date ? new Date(e.resignation_date) : null
-      return d && d.getFullYear() === cy
-    }).length
+    const newHires = allEmployees.filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date).getFullYear() === cy && new Date(e.hire_date) <= now).length
 
     // ลาออกเอง = status 'resigned' + ไม่ใช่ระหว่างทดลองงาน (>= 90 วัน) + ไม่ใช่ Layoff ('terminated')
     const resigned = allEmployees.filter(e => {
       if (e.status !== 'resigned') return false                          // ตัด terminated (Layoff)
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      if (!rd || rd.getFullYear() !== cy) return false
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
       const hd = e.hire_date ? new Date(e.hire_date) : null
       if (hd && (rd - hd) < 90 * 864e5) return false                   // ตัดลาออกระหว่างทดลองงาน
       return true
     }).length
 
-    const beginCount   = total + allDeparted - newHires                 // ใช้ allDeparted เพื่อ headcount ถูกต้อง
-    const avgHead      = (beginCount + total) / 2
-    const turnoverRate = avgHead > 0 ? Math.round((resigned / avgHead) * 1000) / 10 : 0
-    const momPct       = total > 0   ? Math.round((newHires / total) * 10000) / 100  : 0
+    // ลาออกระหว่างทดลองงาน = "ลาออกเอง" (status 'resigned') แต่ยังไม่ครบ 90 วัน — เป็นการตัดสินใจของพนักงานเอง
+    const probationQuit = allEmployees.filter(e => {
+      if (e.status !== 'resigned') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }).length
 
+    // พ้นสภาพ (Layoff) = บริษัทเลิกจ้าง (status 'terminated') หลังผ่านทดลองงานแล้ว (>= 90 วัน)
     const terminated = allEmployees.filter(e => {
       if (e.status !== 'terminated') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      return rd && rd.getFullYear() === cy
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (hd && (rd - hd) < 90 * 864e5) return false                   // ตัดไม่ผ่านทดลองงานออก
+      return true
     }).length
 
-    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, terminated, turnoverRate, momPct }
-  }, [employees, allEmployees, cy])
+    // ไม่ผ่านทดลองงาน = บริษัทเป็นฝ่ายเลิกจ้าง (status 'terminated') ระหว่างช่วงทดลองงาน (< 90 วัน) — คนละกรณีกับลาออกเอง
+    const notPassProbation = allEmployees.filter(e => {
+      if (e.status !== 'terminated') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }).length
+
+    // จำนวนพนักงานคงเหลือ ณ วันที่ 31 ธันวาคมของปีก่อนหน้า (snapshot จริง ไม่ใช่คำนวณย้อนกลับ)
+    // = คนที่เริ่มงานมาแล้วก่อน/เท่ากับวันนั้น และยังไม่ออก (หรือออกหลังวันนั้น)
+    const yearEndPrev = new Date(cy - 1, 11, 31, 23, 59, 59)
+    const beginCount = allEmployees.filter(e => {
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (!hd || hd > yearEndPrev) return false
+      if (e.status === 'resigned' || e.status === 'terminated') {
+        const rd = e.resignation_date ? new Date(e.resignation_date) : null
+        if (rd && rd <= yearEndPrev) return false
+      }
+      return true
+    }).length
+
+    // ยอดพนักงานปัจจุบัน (วันนี้) ตามสูตร = ต้นปี + เข้าใหม่ - ลาออก - ลาออกระหว่างทดลองงาน - พ้นสภาพ - ไม่ผ่านทดลองงาน
+    const netChangeYTD = newHires - resigned - probationQuit - terminated - notPassProbation
+    const currentByFormula = beginCount + netChangeYTD
+    const avgHead      = (beginCount + total) / 2
+    const turnoverRate = avgHead > 0 ? Math.round((resigned / avgHead) * 1000) / 10 : 0
+    const ytdPct       = beginCount > 0 ? Math.round((netChangeYTD / beginCount) * 10000) / 100 : 0
+
+    return { total, male, female, avgAge, medianAge, avgTenure, medianTenure, newHires, resigned, probationQuit, notPassProbation, terminated, turnoverRate, beginCount, netChangeYTD, currentByFormula, ytdPct }
+  }, [employees, allEmployees, cy, now])
 
   // ── YTD lists (for panels) ────────────────────────────────────────────────────
   const newHiresList = useMemo(() =>
-    allEmployees.filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date).getFullYear() === cy),
-  [allEmployees, cy])
+    allEmployees.filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date).getFullYear() === cy && new Date(e.hire_date) <= now),
+  [allEmployees, cy, now])
 
   const resignedList = useMemo(() =>
     allEmployees.filter(e => {
       if (e.status !== 'resigned') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      if (!rd || rd.getFullYear() !== cy) return false
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
       const hd = e.hire_date ? new Date(e.hire_date) : null
       if (hd && (rd - hd) < 90 * 864e5) return false
       return true
     }),
-  [allEmployees, cy])
+  [allEmployees, cy, now])
+
+  // ลาออกระหว่างทดลองงาน — พนักงานตัดสินใจลาออกเอง (status 'resigned') ก่อนครบ 90 วัน
+  const probationQuitList = useMemo(() =>
+    allEmployees.filter(e => {
+      if (e.status !== 'resigned') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }),
+  [allEmployees, cy, now])
 
   const terminatedList = useMemo(() =>
     allEmployees.filter(e => {
       if (e.status !== 'terminated') return false
       const rd = e.resignation_date ? new Date(e.resignation_date) : null
-      return rd && rd.getFullYear() === cy
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      if (hd && (rd - hd) < 90 * 864e5) return false
+      return true
     }),
-  [allEmployees, cy])
+  [allEmployees, cy, now])
+
+  // ไม่ผ่านทดลองงาน — บริษัทเป็นฝ่ายเลิกจ้าง (status 'terminated') ระหว่างช่วงทดลองงาน (< 90 วัน)
+  const notPassProbationList = useMemo(() =>
+    allEmployees.filter(e => {
+      if (e.status !== 'terminated') return false
+      const rd = e.resignation_date ? new Date(e.resignation_date) : null
+      if (!rd || rd.getFullYear() !== cy || rd > now) return false
+      const hd = e.hire_date ? new Date(e.hire_date) : null
+      return hd && (rd - hd) < 90 * 864e5
+    }),
+  [allEmployees, cy, now])
 
   // ── Chart data ────────────────────────────────────────────────────────────────
   const deptData = useMemo(() => {
@@ -691,10 +773,10 @@ export default function Dashboard({ lang }) {
 
   const recentHires = useMemo(() =>
     [...allEmployees]
-      .filter(e => isValidHireDate(e.hire_date))
+      .filter(e => isValidHireDate(e.hire_date) && new Date(e.hire_date) <= now)
       .sort((a, b) => new Date(b.hire_date) - new Date(a.hire_date))
       .slice(0, 5),
-  [allEmployees])
+  [allEmployees, now])
 
   const recentHiresSorted = useMemo(() => {
     return [...recentHires].sort((a, b) => {
@@ -778,11 +860,36 @@ export default function Dashboard({ lang }) {
           <p className="text-sm text-gray-400 mt-0.5">ภาพรวมข้อมูลพนักงานขององค์กร • คลิกที่ข้อมูลเพื่อดูรายละเอียด</p>
         </div>
         <div className="flex items-center gap-2.5 flex-wrap">
-          <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600">
+          <label className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 cursor-pointer">
+            <Calendar className="w-4 h-4 text-gray-400" />
             <span>ข้อมูล ณ วันที่</span>
-            <span className="font-medium">{thDate(now)}</span>
-            <Calendar className="w-4 h-4 text-gray-400 ml-1" />
-          </div>
+            <input
+              type="date"
+              value={isoDate(asOfDate)}
+              min={MIN_AS_OF_DATE}
+              max={isoDate(realToday)}
+              onChange={e => {
+                if (!e.target.value) return
+                const [y, m, d] = e.target.value.split('-').map(Number)
+                let picked = new Date(y, m - 1, d)
+                const [minY, minM, minD] = MIN_AS_OF_DATE.split('-').map(Number)
+                const minDate = new Date(minY, minM - 1, minD)
+                if (picked < minDate) picked = minDate       // clamp: cannot go earlier than 2024-01-01
+                if (picked > realToday) picked = realToday   // clamp: cannot pick a future date
+                setAsOfDate(picked)
+              }}
+              className="font-medium bg-transparent border-none outline-none text-gray-700 cursor-pointer p-0"
+            />
+          </label>
+          {!isToday && (
+            <button
+              onClick={() => setAsOfDate(realToday)}
+              className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100
+                         rounded-lg px-2.5 py-2 transition-colors"
+            >
+              กลับไปวันนี้
+            </button>
+          )}
           <select
             value={buFilter}
             onChange={e => setBuFilter(e.target.value)}
@@ -817,8 +924,8 @@ export default function Dashboard({ lang }) {
           icon={Users} bgColor="bg-blue-100" iconColor="text-blue-600"
           label="พนักงานทั้งหมด"
           value={`${kpis.total.toLocaleString()} คน`}
-          trend={`เพิ่มขึ้น ${kpis.newHires} คน (${kpis.momPct}%) จากเดือนก่อนหน้า`}
-          trendDir="up"
+          trend={`พนักงาน${kpis.netChangeYTD >= 0 ? 'เพิ่ม' : 'ลดลง'} ${Math.abs(kpis.netChangeYTD)} คน (${Math.abs(kpis.ytdPct)}%) จากต้นปี`}
+          trendDir={kpis.netChangeYTD >= 0 ? 'up' : 'down'}
           onClick={() => openPanel('พนักงานทั้งหมด', `Active ${employees.length} คน`, employees)}
         />
         <KpiCard
@@ -1007,6 +1114,22 @@ export default function Dashboard({ lang }) {
             </div>
 
             <div
+              onClick={() => openPanel(`พนักงานลาออกระหว่างทดลองงาน (YTD ${cy})`, `ลาออกระหว่างทดลองงาน ${probationQuitList.length} คน ในปี ${cy}`, probationQuitList)}
+              className="flex items-center justify-between p-3.5 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                  <UserMinus className="w-4 h-4 text-orange-600" />
+                </div>
+                <span className="text-sm text-gray-700 font-medium">ลาออกระหว่างทดลองงาน</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xl font-bold text-orange-600">{kpis.probationQuit} คน</span>
+                <ChevronRight className="w-4 h-4 text-orange-400" />
+              </div>
+            </div>
+
+            <div
               onClick={() => openPanel(`พนักงานพ้นสภาพ (YTD ${cy})`, `พ้นสภาพ ${terminatedList.length} คน ในปี ${cy}`, terminatedList)}
               className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-[0.98] transition-all"
             >
@@ -1022,10 +1145,26 @@ export default function Dashboard({ lang }) {
               </div>
             </div>
 
+            <div
+              onClick={() => openPanel(`พนักงานไม่ผ่านทดลองงาน (YTD ${cy})`, `ไม่ผ่านทดลองงาน ${notPassProbationList.length} คน ในปี ${cy}`, notPassProbationList)}
+              className="flex items-center justify-between p-3.5 bg-yellow-50 rounded-xl cursor-pointer hover:bg-yellow-100 active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                  <UserMinus className="w-4 h-4 text-yellow-600" />
+                </div>
+                <span className="text-sm text-gray-700 font-medium">ไม่ผ่านทดลองงาน</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xl font-bold text-yellow-600">{kpis.notPassProbation} คน</span>
+                <ChevronRight className="w-4 h-4 text-yellow-400" />
+              </div>
+            </div>
+
             <div className="flex items-center justify-between pt-3 mt-1 border-t border-gray-100">
               <span className="text-sm font-bold text-gray-800">สุทธิ</span>
-              <span className={`text-2xl font-bold ${kpis.newHires - kpis.resigned - kpis.terminated >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {kpis.newHires - kpis.resigned - kpis.terminated >= 0 ? '+' : ''}{kpis.newHires - kpis.resigned - kpis.terminated} คน
+              <span className={`text-2xl font-bold ${kpis.netChangeYTD >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {kpis.netChangeYTD >= 0 ? '+' : ''}{kpis.netChangeYTD} คน
               </span>
             </div>
           </div>
