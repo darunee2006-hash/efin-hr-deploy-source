@@ -1491,7 +1491,7 @@ export default function CostAnalysis(){
               <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{pct.toFixed(1)}%</span>
             </div>
             <p className="text-2xl font-bold text-gray-900 mb-1">฿{fmtM(d.totalCost)}</p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-500 mt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-500 mt-3">
               <span>จำนวนพนักงาน</span><span className="text-right font-medium text-gray-700">{d.headcount.size} คน</span>
               <span>ชม.ทำงานรวม</span><span className="text-right font-medium text-gray-700">{fmt(Math.round(d.totalHours))} ชม.</span>
               <span>ต้นทุน/ชม.</span><span className="text-right font-medium text-gray-700">฿{d.totalHours>0?fmt(Math.round(d.totalCost/d.totalHours)):'-'}</span>
@@ -1774,7 +1774,7 @@ export default function CostAnalysis(){
         {/* Month Grid */}
         <div className="mb-5">
           <label className="block text-sm font-medium text-gray-700 mb-2">เลือกเดือนที่ต้องการอัปเดต</label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             {MONTH_ORDER.map((mo,i)=>{
               const st=hoursMonthStatus[mo]
               const hasData=st?.records>0

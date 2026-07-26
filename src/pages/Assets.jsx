@@ -714,7 +714,7 @@ export default function Assets({ lang }) {
         wide
       >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label={lang === 'th' ? 'รหัสทรัพย์สิน' : 'Asset Code'}
               name="asset_code"

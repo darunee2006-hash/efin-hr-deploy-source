@@ -327,9 +327,9 @@ export default function Training({ lang = 'en' }) {
       </Section>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Course Schedule ~35% */}
-        <div className="col-span-12 lg:col-span-4">
+        <div className="lg:col-span-4">
           <Section title={getLabel('schedule', lang)} className="h-full">
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {[...mockCourses].sort((a, b) => new Date(b.dateStart) - new Date(a.dateStart)).slice(0, 10).map((course) => (
@@ -352,7 +352,7 @@ export default function Training({ lang = 'en' }) {
         </div>
 
         {/* Center: Popular Courses ~35% */}
-        <div className="col-span-12 lg:col-span-4">
+        <div className="lg:col-span-4">
           <Section title={getLabel('popular', lang)} className="h-full">
             <div className="space-y-4">
               {popularCourses.map((course, idx) => (
@@ -370,7 +370,7 @@ export default function Training({ lang = 'en' }) {
         </div>
 
         {/* Right: Skill Gap & Images ~30% */}
-        <div className="col-span-12 lg:col-span-4">
+        <div className="lg:col-span-4">
           <DetailPanel>
             <Section title={getLabel('skillGap', lang)}>
               <div className="space-y-3">
@@ -399,9 +399,9 @@ export default function Training({ lang = 'en' }) {
       </div>
 
       {/* Bottom Grid */}
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Registration Tracking */}
-        <div className="col-span-12 lg:col-span-6">
+        <div className="lg:col-span-6">
           <Section title={getLabel('registrationTracking', lang)}>
             <div className="space-y-3">
               {[
@@ -429,7 +429,7 @@ export default function Training({ lang = 'en' }) {
         </div>
 
         {/* Deep Stats & Achievement */}
-        <div className="col-span-12 lg:col-span-6">
+        <div className="lg:col-span-6">
           <Section title={getLabel('deepStats', lang)}>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>

@@ -541,7 +541,7 @@ export default function UserManagement({ lang }) {
       <div className="border-b border-gray-200 pb-1 mb-2">
         <p className="text-xs font-bold text-[#78c045] uppercase tracking-wider">{lang === 'th' ? 'ข้อมูลส่วนตัว' : 'Personal Info'}</p>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <Select label={lang === 'th' ? 'คำนำหน้า' : 'Prefix'} value={form.prefix_th} onChange={e => setForm({ ...form, prefix_th: e.target.value })}>
           <option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option>
         </Select>
@@ -549,13 +549,13 @@ export default function UserManagement({ lang }) {
         <Input label={lang === 'th' ? 'นามสกุล (ไทย)' : 'Last (TH)'} value={form.last_name_th} onChange={e => setForm({ ...form, last_name_th: e.target.value })} required />
         <Input label={lang === 'th' ? 'ชื่อเล่น' : 'Nickname'} value={form.nickname} onChange={e => setForm({ ...form, nickname: e.target.value })} />
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <Input label={lang === 'th' ? 'ชื่อ (EN)' : 'First (EN)'} value={form.first_name_en} onChange={e => setForm({ ...form, first_name_en: e.target.value })} />
         <Input label={lang === 'th' ? 'นามสกุล (EN)' : 'Last (EN)'} value={form.last_name_en} onChange={e => setForm({ ...form, last_name_en: e.target.value })} />
         <Input label={lang === 'th' ? 'อีเมล' : 'Email'} type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
         <Input label={lang === 'th' ? 'เบอร์โทร' : 'Phone'} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Input label={lang === 'th' ? 'เลขบัตรประชาชน' : 'National ID'} value={form.national_id} onChange={e => setForm({ ...form, national_id: e.target.value })} />
         <Input label={lang === 'th' ? 'วันเกิด' : 'Birth Date'} type="date" value={form.date_of_birth} onChange={e => setForm({ ...form, date_of_birth: e.target.value })} />
         <Input label={lang === 'th' ? 'เลขผู้เสียภาษี' : 'Tax ID'} value={form.tax_id} onChange={e => setForm({ ...form, tax_id: e.target.value })} />
@@ -566,7 +566,7 @@ export default function UserManagement({ lang }) {
       <div className="border-b border-gray-200 pb-1 mb-2 mt-4">
         <p className="text-xs font-bold text-[#78c045] uppercase tracking-wider">{lang === 'th' ? 'ข้อมูลงาน' : 'Work Info'}</p>
       </div>
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
         <Input label={lang === 'th' ? 'รหัสพนักงาน' : 'Emp Code'} value={form.employee_code} onChange={e => setForm({ ...form, employee_code: e.target.value })} />
         <Select label={lang === 'th' ? 'บริษัท' : 'Company'} value={form.company_entity} onChange={e => setForm({ ...form, company_entity: e.target.value })}>
           <option value="">{lang === 'th' ? '— เลือก —' : '— Select —'}</option>
@@ -582,12 +582,12 @@ export default function UserManagement({ lang }) {
         </Select>
         <Input label="Cost Center" value={form.cost_center} onChange={e => setForm({ ...form, cost_center: e.target.value })} />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Input label={lang === 'th' ? 'ตำแหน่ง (ไทย)' : 'Position (TH)'} value={form.position_th} onChange={e => setForm({ ...form, position_th: e.target.value })} />
         <Input label={lang === 'th' ? 'ตำแหน่ง (EN)' : 'Position (EN)'} value={form.position_en} onChange={e => setForm({ ...form, position_en: e.target.value })} />
         <Input label={lang === 'th' ? 'วันเริ่มงาน' : 'Hire Date'} type="date" value={form.hire_date} onChange={e => setForm({ ...form, hire_date: e.target.value })} />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Select label={lang === 'th' ? 'ประเภทพนักงาน' : 'Emp Type'} value={form.employment_type} onChange={e => setForm({ ...form, employment_type: e.target.value })}>
           <option value="permanent">{lang === 'th' ? 'ประจำ' : 'Permanent'}</option>
           <option value="contract">{lang === 'th' ? 'สัญญาจ้าง' : 'Contract'}</option>
@@ -602,7 +602,7 @@ export default function UserManagement({ lang }) {
       <div className="border-b border-gray-200 pb-1 mb-2 mt-4">
         <p className="text-xs font-bold text-[#78c045] uppercase tracking-wider">{lang === 'th' ? 'เงินเดือน & ธนาคาร' : 'Salary & Bank'}</p>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <Input label={lang === 'th' ? 'เงินเดือน' : 'Base Salary'} type="number" value={form.base_salary} onChange={e => setForm({ ...form, base_salary: e.target.value })} />
         <Select label={lang === 'th' ? 'รอบเงินเดือน' : 'Pay Cycle'} value={form.payroll_cycle} onChange={e => setForm({ ...form, payroll_cycle: e.target.value })}>
           <option value="monthly">{lang === 'th' ? 'รายเดือน' : 'Monthly'}</option>
@@ -616,12 +616,12 @@ export default function UserManagement({ lang }) {
       <div className="border-b border-gray-200 pb-1 mb-2 mt-4">
         <p className="text-xs font-bold text-[#78c045] uppercase tracking-wider">{lang === 'th' ? 'ประกันสังคม / ภาษี / กองทุน' : 'SSO / Tax / PVD'}</p>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Input label={lang === 'th' ? 'เลขประกันสังคม' : 'SSO No.'} value={form.social_security_no} onChange={e => setForm({ ...form, social_security_no: e.target.value })} />
         <Input label={lang === 'th' ? 'รพ.ประกันสังคม' : 'SSO Hospital'} value={form.sso_hospital} onChange={e => setForm({ ...form, sso_hospital: e.target.value })} />
         <Input label={lang === 'th' ? 'สถานะภาษี' : 'Tax Filing'} value={form.tax_filing_status} onChange={e => setForm({ ...form, tax_filing_status: e.target.value })} placeholder={lang === 'th' ? 'เช่น โสด/คู่สมรส' : 'e.g. Single/Married'} />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label={lang === 'th' ? 'กองทุนสำรองฯ (% พนักงาน)' : 'PVD Employee %'} type="number" value={form.pvd_employee_rate} onChange={e => setForm({ ...form, pvd_employee_rate: e.target.value })} />
       </div>
 
@@ -629,7 +629,7 @@ export default function UserManagement({ lang }) {
       <div className="border-b border-gray-200 pb-1 mb-2 mt-4">
         <p className="text-xs font-bold text-[#78c045] uppercase tracking-wider">{lang === 'th' ? 'ผู้ติดต่อฉุกเฉิน' : 'Emergency Contact'}</p>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Input label={lang === 'th' ? 'ชื่อ' : 'Name'} value={form.emergency_contact_name} onChange={e => setForm({ ...form, emergency_contact_name: e.target.value })} />
         <Input label={lang === 'th' ? 'เบอร์โทร' : 'Phone'} value={form.emergency_contact_phone} onChange={e => setForm({ ...form, emergency_contact_phone: e.target.value })} />
         <Input label={lang === 'th' ? 'ความสัมพันธ์' : 'Relation'} value={form.emergency_contact_relation} onChange={e => setForm({ ...form, emergency_contact_relation: e.target.value })} placeholder={lang === 'th' ? 'เช่น บิดา/มารดา' : 'e.g. Father/Mother'} />

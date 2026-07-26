@@ -197,6 +197,7 @@ function SlidePanel({ panel, onClose }) {
 
         {/* table */}
         <div className="flex-1 overflow-y-auto">
+          <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead className="sticky top-0 bg-white border-b border-gray-100 z-10 shadow-sm">
               <tr>
@@ -298,6 +299,7 @@ function SlidePanel({ panel, onClose }) {
               })}
             </tbody>
           </table>
+          </div>
           {filtered.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
               <Users className="w-10 h-10 mb-2 opacity-20" />

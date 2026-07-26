@@ -627,12 +627,12 @@ export default function Payroll({ lang }) {
       </div>
 
       {/* Main Content: 65% left + 35% right */}
-      <div className="flex gap-5">
+      <div className="flex flex-col lg:flex-row gap-5">
         {/* Left Panel (~65%) */}
         <div className="flex-1 space-y-4">
           {/* Summary Section */}
           <Section title={T(lang, 'สรุปการจ่ายเงินเดือน', 'Payroll Summary')}>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               <div>
                 <p className="text-xs text-gray-500 mb-1">{T(lang, 'จำนวนพนักงาน', 'Total Employees')}</p>
                 <p className="text-2xl font-bold text-gray-900">{filteredPayroll.length}</p>

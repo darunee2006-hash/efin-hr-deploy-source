@@ -321,7 +321,7 @@ function ExecTab({ data }) {
             <span className="w-7 h-7 rounded-full bg-[#78c045] flex items-center justify-center text-base">💡</span>
             <span className="font-semibold text-sm">Executive Insight</span>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-200">
             <p className="flex gap-2"><span className="text-[#78c045]">🎯</span><span>{kpis.overload} คน ({pct(kpis.overload,kpis.total)}%) กำลังคนไม่เพียงพอ</span></p>
             <p className="flex gap-2"><span className="text-[#78c045]">⭐</span><span>{kpis.crNoBk} Critical Role ไม่มี Backup</span></p>
             <p className="flex gap-2"><span className="text-[#78c045]">📊</span><span>Skill Gap AI/Data เกี่ยวข้อง 28 ทีม</span></p>
@@ -428,7 +428,7 @@ function ManpowerTab({ data }) {
   const requests = useMemo(() => data.filter(d => d.oy >= 3 || d.om >= 3).sort((a, b) => (b.oy+b.om)-(a.oy+a.om)), [data])
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">{requests.length}</p>
           <p className="text-xs text-gray-500 mt-1">รายการ Optimize Request</p>
@@ -570,7 +570,7 @@ function CriticalTab({ data }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label:'Critical Role ทั้งหมด',      val:data.filter(d=>d.cr).length,           color:'#374151' },
           { label:'ไม่มี Backup',               val:data.filter(d=>d.cr&&!d.bk).length,    color:'#ef4444' },
@@ -646,7 +646,7 @@ function ActionTab() {
       {showForm && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 space-y-3">
           <h4 className="text-sm font-semibold text-gray-700">เพิ่ม Action Plan ใหม่</h4>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div><label className="text-xs text-gray-500 mb-1 block">Priority</label>
               <select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#78c045]">
                 <option>P0</option><option>P1</option><option>P2</option>
@@ -655,10 +655,10 @@ function ActionTab() {
             <div><label className="text-xs text-gray-500 mb-1 block">วันที่ครบกำหนด</label>
               <input type="date" value={form.due} onChange={e=>setForm({...form,due:e.target.value})} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#78c045]" />
             </div>
-            <div className="col-span-2"><label className="text-xs text-gray-500 mb-1 block">ประเด็น</label>
+            <div className="sm:col-span-2"><label className="text-xs text-gray-500 mb-1 block">ประเด็น</label>
               <input value={form.issue} onChange={e=>setForm({...form,issue:e.target.value})} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#78c045]" placeholder="ชื่อประเด็น..." />
             </div>
-            <div className="col-span-2"><label className="text-xs text-gray-500 mb-1 block">ชื่อผู้เกี่ยวข้อง</label>
+            <div className="sm:col-span-2"><label className="text-xs text-gray-500 mb-1 block">ชื่อผู้เกี่ยวข้อง</label>
               <input value={form.owners} onChange={e=>setForm({...form,owners:e.target.value})} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#78c045]" placeholder="ชื่อ 1, ชื่อ 2, ..." />
             </div>
             <div><label className="text-xs text-gray-500 mb-1 block">เหตุผล</label>

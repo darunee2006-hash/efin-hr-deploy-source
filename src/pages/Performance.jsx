@@ -185,7 +185,7 @@ function AddProbationModal({ open, onClose, onSaved }) {
           {form.start_date && (
             <div className="bg-[#f0f9e8] rounded-lg px-3 py-2">
               <h5 className="text-xs font-bold text-[#5a9030] mb-1">ตาราง 3 รอบประเมิน (คำนวณอัตโนมัติ)</h5>
-              <div className="grid grid-cols-3 gap-2 text-[10px] text-[#78c045]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px] text-[#78c045]">
                 {[1, 2, 3].map(r => {
                   const s = new Date(form.start_date); s.setDate(s.getDate() + (r - 1) * 30)
                   const e = new Date(s); e.setDate(e.getDate() + 29)
@@ -940,7 +940,7 @@ export default function Performance({ lang }) {
                     { key: 'C+', label: 'C+', count: companyFilteredEmployees.filter(e => e.grade === 'C+').length },
                   ]} active={filterType} onChange={setFilterType} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">{lang === 'th' ? 'แผนก' : 'Department'}</label>
                     <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="w-full text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">

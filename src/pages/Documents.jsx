@@ -345,7 +345,7 @@ export default function Documents({ lang = 'th' }) {
       )}
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <KPICard icon={FileText}  iconBg="bg-blue-100"   iconColor="text-blue-600"   label={t.allDocs}     value={kpis.total} />
         <KPICard icon={FileCheck} iconBg="bg-green-100"  iconColor="text-green-600"  label={t.activeLabel} value={kpis.active} />
         <KPICard icon={Clock}     iconBg="bg-yellow-100" iconColor="text-yellow-600" label={t.expiringSoon} value={kpis.expiring} />
@@ -367,7 +367,7 @@ export default function Documents({ lang = 'th' }) {
       </Section>
 
       {/* Main Content */}
-      <div className="flex gap-5">
+      <div className="flex flex-col lg:flex-row gap-5">
         {/* Left: Document List */}
         <div className="flex-1">
           <Section title={`${activeTab} (${filteredDocs.length})`}>

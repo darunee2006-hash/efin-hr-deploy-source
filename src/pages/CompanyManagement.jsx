@@ -285,36 +285,36 @@ export default function CompanyManagement({ lang }) {
           )}
 
           <SectionHeader icon={Building2} label={L.sectionGeneral} />
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             <Input label={L.code} value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} placeholder="EFIN" />
             <Input label={L.nameTh} value={form.name_th} onChange={e => setForm({ ...form, name_th: e.target.value })} required />
             <Input label={L.nameEn} value={form.name_en} onChange={e => setForm({ ...form, name_en: e.target.value })} />
           </div>
 
           <SectionHeader icon={FileText} label={L.sectionLegal} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.taxId} value={form.tax_id} onChange={e => setForm({ ...form, tax_id: e.target.value })} placeholder="0-0000-00000-00-0" />
             <Input label={L.regNo} value={form.registration_no} onChange={e => setForm({ ...form, registration_no: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.signatory} value={form.authorized_signatory} onChange={e => setForm({ ...form, authorized_signatory: e.target.value })} />
             <Input label={L.signatoryPos} value={form.signatory_position} onChange={e => setForm({ ...form, signatory_position: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.ssoNo} value={form.social_security_no} onChange={e => setForm({ ...form, social_security_no: e.target.value })} />
             <Input label={L.ssoBranch} value={form.social_security_branch} onChange={e => setForm({ ...form, social_security_branch: e.target.value })} />
           </div>
 
           <SectionHeader icon={Globe} label={L.sectionContact} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.phone} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
             <Input label={L.fax} value={form.fax} onChange={e => setForm({ ...form, fax: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.email} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="info@company.com" />
             <Input label={L.website} value={form.website} onChange={e => setForm({ ...form, website: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">{L.addressTh}</label>
               <textarea rows={2} value={form.address_th} onChange={e => setForm({ ...form, address_th: e.target.value })}
@@ -328,17 +328,17 @@ export default function CompanyManagement({ lang }) {
           </div>
 
           <SectionHeader icon={Landmark} label={L.sectionBank} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.bankName} value={form.bank_name} onChange={e => setForm({ ...form, bank_name: e.target.value })} />
             <Input label={L.bankBranch} value={form.bank_branch} onChange={e => setForm({ ...form, bank_branch: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.bankAccNo} value={form.bank_account_no} onChange={e => setForm({ ...form, bank_account_no: e.target.value })} />
             <Input label={L.bankAccName} value={form.bank_account_name} onChange={e => setForm({ ...form, bank_account_name: e.target.value })} />
           </div>
 
           <SectionHeader icon={Shield} label={L.sectionPvd} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label={L.pvdName} value={form.provident_fund_name} onChange={e => setForm({ ...form, provident_fund_name: e.target.value })} />
             <Input label={L.pvdNo} value={form.provident_fund_no} onChange={e => setForm({ ...form, provident_fund_no: e.target.value })} />
           </div>

@@ -280,7 +280,7 @@ export default function TimeAttendance({ lang }) {
       </div>
 
       {/* Main Content */}
-      <div className="flex gap-5">
+      <div className="flex flex-col lg:flex-row gap-5">
         {/* Left Column */}
         <div className="flex-1 space-y-5">
           {/* Data Table */}

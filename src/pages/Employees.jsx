@@ -658,7 +658,7 @@ export default function Employees({ lang }) {
       <PageHeader title="ข้อมูลพนักงาน" subtitle="efin HRS" lang={lang} />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <KPICard icon={Users} iconBg="bg-blue-100" iconColor="text-blue-600" label="จำนวนพนักงานทั้งหมด" value={totalEmployees} />
         <KPICard icon={UserCheck} iconBg="bg-green-100" iconColor="text-green-600" label="พนักงานประจำ" value={fullTimeCount} />
         <KPICard icon={Building} iconBg="bg-purple-100" iconColor="text-purple-600" label="แผนก/ฝ่าย" value={deptCount} />
@@ -919,7 +919,7 @@ export default function Employees({ lang }) {
                 {/* ข้อมูลส่วนตัว */}
                 <div>
                   <SectionLabel title="ข้อมูลส่วนตัว" />
-                  <div className="grid grid-cols-2 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                     <InfoRow label="คำนำหน้า" value={emp.prefix_th} />
                     <InfoRow label="ชื่อเล่น" value={emp.nickname} />
                     <InfoRow label="ชื่อ (ไทย)" value={emp.first_name_th} />
@@ -941,7 +941,7 @@ export default function Employees({ lang }) {
                 {/* ข้อมูลงาน */}
                 <div>
                   <SectionLabel title="ข้อมูลงาน" color="blue" />
-                  <div className="grid grid-cols-2 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                     <InfoRow label="รหัสพนักงาน" value={emp.employee_code} />
                     <InfoRow label="บริษัท" value={emp.company_entity} />
                     <InfoRow label="BU" value={emp.bu} />
@@ -978,7 +978,7 @@ export default function Employees({ lang }) {
                 {canViewSalary && (
                 <div>
                   <SectionLabel title="เงินเดือน & ธนาคาร" color="emerald" />
-                  <div className="grid grid-cols-2 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                     <InfoRow label="เงินเดือน" value={emp.base_salary ? `${fmtNum(emp.base_salary)} บาท` : '-'} />
                     <InfoRow label="รอบเงินเดือน" value={payCycles[emp.payroll_cycle] || emp.payroll_cycle} />
                     <InfoRow label="ค่าตำแหน่ง" value={emp.position_allowance ? `${fmtNum(emp.position_allowance)} บาท` : '-'} />
@@ -993,7 +993,7 @@ export default function Employees({ lang }) {
                 {/* ประกันสังคม / ภาษี / กองทุน */}
                 <div>
                   <SectionLabel title="ประกันสังคม / ภาษี / กองทุน" color="violet" />
-                  <div className="grid grid-cols-2 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                     <InfoRow label="เลขประกันสังคม" value={emp.social_security_no} sensitive />
                     <InfoRow label="รพ.ประกันสังคม" value={emp.sso_hospital} />
                     <InfoRow label="สถานะภาษี" value={emp.tax_filing_status} />
@@ -1006,7 +1006,7 @@ export default function Employees({ lang }) {
                 {/* ผู้ติดต่อฉุกเฉิน */}
                 <div>
                   <SectionLabel title="ผู้ติดต่อฉุกเฉิน" color="red" />
-                  <div className="grid grid-cols-2 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                     <InfoRow label="ชื่อ" value={emp.emergency_contact_name} />
                     <InfoRow label="เบอร์โทร" value={emp.emergency_contact_phone} />
                     <InfoRow label="ความสัมพันธ์" value={emp.emergency_contact_relation} />
@@ -1053,7 +1053,7 @@ export default function Employees({ lang }) {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">รหัสพนักงาน *</label>
                   <input

@@ -468,13 +468,13 @@ export default function Welfare({ lang = 'th' }) {
                 </button>
               </div>
               <form onSubmit={handleSave} className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">ชื่อสวัสดิการ (ไทย) *</label>
                     <input value={form.name_th} onChange={e => setForm(f => ({ ...f, name_th: e.target.value }))} required
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">ชื่อสวัสดิการ (EN)</label>
                     <input value={form.name_en} onChange={e => setForm(f => ({ ...f, name_en: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" />
@@ -493,12 +493,12 @@ export default function Welfare({ lang = 'th' }) {
                     <input type="number" value={form.coverage_amount} onChange={e => setForm(f => ({ ...f, coverage_amount: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" placeholder="500000" />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">ผู้ให้บริการ / บริษัทประกัน</label>
                     <input value={form.provider} onChange={e => setForm(f => ({ ...f, provider: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" placeholder="AIA, กรุงเทพประกันภัย..." />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">ผู้มีสิทธิ์</label>
                     <input value={form.eligibility} onChange={e => setForm(f => ({ ...f, eligibility: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" placeholder="พนักงานประจำผ่านทดลองงาน..." />
@@ -513,12 +513,12 @@ export default function Welfare({ lang = 'th' }) {
                     <input type="date" value={form.expiry_date} onChange={e => setForm(f => ({ ...f, expiry_date: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">รายละเอียด</label>
                     <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none resize-none" />
                   </div>
-                  <div className="col-span-2 flex items-center gap-3">
+                  <div className="sm:col-span-2 flex items-center gap-3">
                     <label className="text-xs font-medium text-gray-600">สถานะ</label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))}

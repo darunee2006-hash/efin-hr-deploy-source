@@ -95,7 +95,7 @@ const RecordDetail = ({ record, onClose }) => {
           </div>
         </div>
         <div className="p-6 space-y-5">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {isResign && raw?.resign_notify_date && (
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-xs text-gray-500 font-medium mb-1">วันที่แจ้งลาออก</p>
@@ -214,7 +214,7 @@ const AddExitInterviewModal = ({ existing, onClose, onSaved }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {!isEdit && (
             <>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div><label className={lbl}>ชื่อ-สกุล *</label><input value={form.full_name} onChange={e => set('full_name', e.target.value)} className={inp} placeholder="ชื่อ นามสกุล" /></div>
                 <div>
                   <label className={lbl}>บริษัท</label>
@@ -224,11 +224,11 @@ const AddExitInterviewModal = ({ existing, onClose, onSaved }) => {
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div><label className={lbl}>ฝ่ายงาน</label><input value={form.department} onChange={e => set('department', e.target.value)} className={inp} placeholder="ชื่อฝ่ายงาน" /></div>
                 <div><label className={lbl}>ตำแหน่ง</label><input value={form.position} onChange={e => set('position', e.target.value)} className={inp} placeholder="ตำแหน่งงาน" /></div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div><label className={lbl}>วันที่แจ้งลาออก</label><input type="date" value={form.resign_notify_date} onChange={e => set('resign_notify_date', e.target.value)} className={inp} /></div>
                 <div><label className={lbl}>วันทำงานสุดท้าย</label><input type="date" value={form.last_working_date} onChange={e => handleDateChange(e.target.value)} className={inp} /></div>
               </div>

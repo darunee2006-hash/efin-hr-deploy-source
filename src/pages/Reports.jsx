@@ -292,7 +292,7 @@ export default function Reports({ lang }) {
         </Section>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <KPICard icon={Users} iconBg="bg-blue-100" iconColor="text-blue-600"
             label={labels.employees} value={kpis.active} />
           <KPICard icon={TrendingDown} iconBg="bg-red-100" iconColor="text-red-600"
@@ -320,7 +320,7 @@ export default function Reports({ lang }) {
         </div>
 
         {/* Charts Grid - Top Row */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Headcount Trend */}
           <Section title={labels.headcountTrend}>
             <ResponsiveContainer width="100%" height={300}>
@@ -373,9 +373,9 @@ export default function Reports({ lang }) {
         </div>
 
         {/* Bottom Row */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Grade Distribution */}
-          <div className="col-span-2">
+          <div className="lg:col-span-2">
             <Section title={labels.gradeDistribution}>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={computedGradeDist} layout="vertical" margin={{ left: 80 }}>
