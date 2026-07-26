@@ -1007,49 +1007,102 @@ export default function Dashboard({ lang }) {
               </ResponsiveContainer>
             </div>
 
-            {/* Summary Table */}
+            {/* Employee Movement */}
             <div className="flex-1 min-w-0">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="text-left pb-2 text-gray-500 font-medium">บริษัท</th>
-                    <th className="text-right pb-2 text-gray-500 font-medium w-20">จำนวน (คน)</th>
-                    <th className="text-right pb-2 text-gray-500 font-medium w-14">%</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {companyData.map((d, i) => (
-                    <tr
-                      key={i}
-                      onClick={() => onCompanyClick(d.name)}
-                      className="cursor-pointer hover:bg-blue-50 transition-colors"
-                    >
-                      <td className="py-2 text-gray-700">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="w-3 h-3 rounded-sm flex-shrink-0"
-                            style={{ background: COMPANY_COLORS[i % COMPANY_COLORS.length] }}
-                          />
-                          <span className="font-medium">{d.name}</span>
-                        </div>
-                      </td>
-                      <td className="py-2 text-right font-semibold text-gray-800">
-                        {d.value.toLocaleString()}
-                      </td>
-                      <td className="py-2 text-right text-gray-500">
-                        {kpis.total > 0 ? ((d.value / kpis.total) * 100).toFixed(1) : '0.0'}%
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr className="border-t border-gray-200">
-                    <td className="pt-2 text-gray-700 font-semibold">รวม</td>
-                    <td className="pt-2 text-right font-bold text-gray-900">{kpis.total.toLocaleString()}</td>
-                    <td className="pt-2 text-right font-semibold text-gray-700">100%</td>
-                  </tr>
-                </tfoot>
-              </table>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-gray-800">การเปลี่ยนแปลงพนักงาน</h4>
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-md">YTD</span>
+              </div>
+              <div className="space-y-2.5">
+                <div
+                  onClick={() => openPanel(`พนักงานเข้าใหม่ (YTD ${cy})`, `รับเข้า ${newHiresList.length} คน ในปี ${cy}`, newHiresList)}
+                  className="flex items-center justify-between p-3 bg-green-50 rounded-xl
+                             cursor-pointer hover:bg-green-100 active:scale-[0.98] transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <UserPlus className="w-4 h-4 text-green-600" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium">เข้าใหม่</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-green-600">{kpis.newHires} คน</span>
+                    <ChevronRight className="w-4 h-4 text-green-400" />
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openPanel(`พนักงานที่ลาออก (YTD ${cy})`, `ลาออก ${resignedList.length} คน ในปี ${cy}`, resignedList)}
+                  className="flex items-center justify-between p-3 bg-red-50 rounded-xl
+                             cursor-pointer hover:bg-red-100 active:scale-[0.98] transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                      <UserMinus className="w-4 h-4 text-red-500" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium">ลาออก</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-red-500">{kpis.resigned} คน</span>
+                    <ChevronRight className="w-4 h-4 text-red-400" />
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openPanel(`พนักงานลาออกระหว่างทดลองงาน (YTD ${cy})`, `ลาออกระหว่างทดลองงาน ${probationQuitList.length} คน ในปี ${cy}`, probationQuitList)}
+                  className="flex items-center justify-between p-3 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 active:scale-[0.98] transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <UserMinus className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium">ลาออกระหว่างทดลองงาน</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-orange-600">{kpis.probationQuit} คน</span>
+                    <ChevronRight className="w-4 h-4 text-orange-400" />
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openPanel(`พนักงานพ้นสภาพ (YTD ${cy})`, `พ้นสภาพ ${terminatedList.length} คน ในปี ${cy}`, terminatedList)}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-[0.98] transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                      <UserMinus className="w-4 h-4 text-gray-600" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium">พ้นสภาพ (Layoff)</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-gray-600">{kpis.terminated} คน</span>
+                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openPanel(`พนักงานไม่ผ่านทดลองงาน (YTD ${cy})`, `ไม่ผ่านทดลองงาน ${notPassProbationList.length} คน ในปี ${cy}`, notPassProbationList)}
+                  className="flex items-center justify-between p-3 bg-yellow-50 rounded-xl cursor-pointer hover:bg-yellow-100 active:scale-[0.98] transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                      <UserMinus className="w-4 h-4 text-yellow-600" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium">ไม่ผ่านทดลองงาน</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-yellow-600">{kpis.notPassProbation} คน</span>
+                    <ChevronRight className="w-4 h-4 text-yellow-400" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-gray-100">
+                  <span className="text-sm font-bold text-gray-800">สุทธิ</span>
+                  <span className={`text-xl font-bold ${kpis.netChangeYTD >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                    {kpis.netChangeYTD >= 0 ? '+' : ''}{kpis.netChangeYTD} คน
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1069,106 +1122,8 @@ export default function Dashboard({ lang }) {
         />
       </div>
 
-      {/* ── Row 3: Movement + Age + Tenure ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        {/* Employee Movement */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-gray-800">การเปลี่ยนแปลงพนักงาน</h3>
-            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-md">YTD</span>
-          </div>
-          <div className="space-y-3">
-            <div
-              onClick={() => openPanel(`พนักงานเข้าใหม่ (YTD ${cy})`, `รับเข้า ${newHiresList.length} คน ในปี ${cy}`, newHiresList)}
-              className="flex items-center justify-between p-3.5 bg-green-50 rounded-xl
-                         cursor-pointer hover:bg-green-100 active:scale-[0.98] transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <UserPlus className="w-4 h-4 text-green-600" />
-                </div>
-                <span className="text-sm text-gray-700 font-medium">เข้าใหม่</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-green-600">{kpis.newHires} คน</span>
-                <ChevronRight className="w-4 h-4 text-green-400" />
-              </div>
-            </div>
-
-            <div
-              onClick={() => openPanel(`พนักงานที่ลาออก (YTD ${cy})`, `ลาออก ${resignedList.length} คน ในปี ${cy}`, resignedList)}
-              className="flex items-center justify-between p-3.5 bg-red-50 rounded-xl
-                         cursor-pointer hover:bg-red-100 active:scale-[0.98] transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                  <UserMinus className="w-4 h-4 text-red-500" />
-                </div>
-                <span className="text-sm text-gray-700 font-medium">ลาออก</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-red-500">{kpis.resigned} คน</span>
-                <ChevronRight className="w-4 h-4 text-red-400" />
-              </div>
-            </div>
-
-            <div
-              onClick={() => openPanel(`พนักงานลาออกระหว่างทดลองงาน (YTD ${cy})`, `ลาออกระหว่างทดลองงาน ${probationQuitList.length} คน ในปี ${cy}`, probationQuitList)}
-              className="flex items-center justify-between p-3.5 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 active:scale-[0.98] transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                  <UserMinus className="w-4 h-4 text-orange-600" />
-                </div>
-                <span className="text-sm text-gray-700 font-medium">ลาออกระหว่างทดลองงาน</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-orange-600">{kpis.probationQuit} คน</span>
-                <ChevronRight className="w-4 h-4 text-orange-400" />
-              </div>
-            </div>
-
-            <div
-              onClick={() => openPanel(`พนักงานพ้นสภาพ (YTD ${cy})`, `พ้นสภาพ ${terminatedList.length} คน ในปี ${cy}`, terminatedList)}
-              className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-[0.98] transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                  <UserMinus className="w-4 h-4 text-gray-600" />
-                </div>
-                <span className="text-sm text-gray-700 font-medium">พ้นสภาพ (Layoff)</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-gray-600">{kpis.terminated} คน</span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
-              </div>
-            </div>
-
-            <div
-              onClick={() => openPanel(`พนักงานไม่ผ่านทดลองงาน (YTD ${cy})`, `ไม่ผ่านทดลองงาน ${notPassProbationList.length} คน ในปี ${cy}`, notPassProbationList)}
-              className="flex items-center justify-between p-3.5 bg-yellow-50 rounded-xl cursor-pointer hover:bg-yellow-100 active:scale-[0.98] transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                  <UserMinus className="w-4 h-4 text-yellow-600" />
-                </div>
-                <span className="text-sm text-gray-700 font-medium">ไม่ผ่านทดลองงาน</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-yellow-600">{kpis.notPassProbation} คน</span>
-                <ChevronRight className="w-4 h-4 text-yellow-400" />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-3 mt-1 border-t border-gray-100">
-              <span className="text-sm font-bold text-gray-800">สุทธิ</span>
-              <span className={`text-2xl font-bold ${kpis.netChangeYTD >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {kpis.netChangeYTD >= 0 ? '+' : ''}{kpis.netChangeYTD} คน
-              </span>
-            </div>
-          </div>
-        </div>
+      {/* ── Row 3: Age + Tenure ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* Age Distribution */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
