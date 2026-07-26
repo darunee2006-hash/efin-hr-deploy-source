@@ -58,7 +58,7 @@ export function Section({ title, action, children, className = '', noPad = false
 // Right detail panel
 export function DetailPanel({ children, className = '' }) {
   return (
-    <div className={`w-80 flex-shrink-0 space-y-4 ${className}`}>
+    <div className={`w-full lg:w-80 flex-shrink-0 space-y-4 ${className}`}>
       {children}
     </div>
   )
