@@ -60,11 +60,68 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-/* ─── Dept Org Chart — dark thin scrollbar (VS Code style) ─ */
-.dept-chart-scroll::-webkit-scrollbar              { height: 8px; }
-.dept-chart-scroll::-webkit-scrollbar-track        { background: #2d2d2d; }
-.dept-chart-scroll::-webkit-scrollbar-thumb        { background: #6e6e6e; border-radius: 2px; }
-.dept-chart-scroll::-webkit-scrollbar-thumb:hover  { background: #909090; }
+/* ─── Org chart wide-content panels — always-visible horizontal scrollbar ─ */
+.org-hscroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: auto;
+  scrollbar-color: var(--oa-green) var(--oa-green-light);
+}
+.org-hscroll::-webkit-scrollbar              { height: 12px; }
+.org-hscroll::-webkit-scrollbar-track        { background: var(--oa-green-light); border-radius: 6px; }
+.org-hscroll::-webkit-scrollbar-thumb        { background: var(--oa-green); border-radius: 6px; border: 2px solid var(--oa-green-light); }
+.org-hscroll::-webkit-scrollbar-thumb:hover  { background: var(--oa-green-dark); }
+
+/* ─── Data tables / wide dashboards — brand-styled horizontal scroll ────── */
+/* Wrap any wide table/grid in <div className="table-scroll">…</div>.
+   Add `data-bounded` (or the `table-scroll-bounded` variant below) when the
+   table is long and should scroll internally with a sticky header. */
+.table-scroll {
+  overflow-x: auto;
+  scrollbar-width: auto;
+  scrollbar-color: var(--oa-green) var(--oa-green-light);
+}
+.table-scroll::-webkit-scrollbar              { height: 12px; }
+.table-scroll::-webkit-scrollbar-track        { background: var(--oa-green-light); border-radius: 6px; }
+.table-scroll::-webkit-scrollbar-thumb        { background: var(--oa-green); border-radius: 6px; border: 2px solid var(--oa-green-light); }
+.table-scroll::-webkit-scrollbar-thumb:hover  { background: var(--oa-green-dark); }
+.table-scroll::-webkit-scrollbar-corner       { background: var(--oa-green-light); }
+
+/* Bounded variant: internal vertical scroll too, so both scrollbars stay
+   visible inside the panel without depending on page scroll position. */
+.table-scroll-bounded {
+  overflow: auto;
+  max-height: 65vh;
+  scrollbar-width: auto;
+  scrollbar-color: var(--oa-green) var(--oa-green-light);
+}
+.table-scroll-bounded::-webkit-scrollbar              { width: 12px; height: 12px; }
+.table-scroll-bounded::-webkit-scrollbar-track        { background: var(--oa-green-light); border-radius: 6px; }
+.table-scroll-bounded::-webkit-scrollbar-thumb        { background: var(--oa-green); border-radius: 6px; border: 2px solid var(--oa-green-light); }
+.table-scroll-bounded::-webkit-scrollbar-thumb:hover  { background: var(--oa-green-dark); }
+.table-scroll-bounded::-webkit-scrollbar-corner       { background: var(--oa-green-light); }
+
+/* Sticky table header — use inside .table-scroll / .table-scroll-bounded */
+.table-scroll thead th,
+.table-scroll-bounded thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Sticky/frozen column — apply to the th/td that should stay put while
+   scrolling horizontally (e.g. employee name, department, BU). Needs an
+   explicit background since sticky cells sit above the scrolling content. */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: inherit;
+}
+.table-scroll thead .sticky-col,
+.table-scroll-bounded thead .sticky-col {
+  z-index: 15;
+}
 
 .oa-btn-primary:hover { background: var(--oa-green-dark); }
 .oa-input {
