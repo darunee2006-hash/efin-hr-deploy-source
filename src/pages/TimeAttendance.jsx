@@ -285,12 +285,12 @@ export default function TimeAttendance({ lang }) {
         <div className="flex-1 space-y-5">
           {/* Data Table */}
           <Section title={`ข้อมูลลา / มาสาย / ขาด ${selectedMonth === 'all' ? '(ม.ค.-มี.ค. 69)' : monthLabels[selectedMonth] || ''}`}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="table-scroll-bounded">
+              <table className="w-full text-sm min-w-[1200px]">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50">
                     <th className="text-left py-2 px-2 font-semibold text-gray-700">#</th>
-                    <th className="text-left py-2 px-2 font-semibold text-gray-700">ชื่อ-นามสกุล</th>
+                    <th className="text-left py-2 px-2 font-semibold text-gray-700 sticky-col bg-gray-50">ชื่อ-นามสกุล</th>
                     {selectedMonth === 'all' && <th className="text-left py-2 px-2 font-semibold text-gray-700">เดือน</th>}
                     <th className="text-center py-2 px-2 font-semibold text-gray-700">ขาด</th>
                     <th className="text-center py-2 px-2 font-semibold text-gray-700">ป่วย</th>
@@ -305,7 +305,7 @@ export default function TimeAttendance({ lang }) {
                   {filteredData.slice(0, 100).map((a, idx) => (
                     <tr key={a.id} className="border-b border-gray-50 hover:bg-gray-50">
                       <td className="py-2 px-2 text-gray-500 text-xs">{idx + 1}</td>
-                      <td className="py-2 px-2">
+                      <td className="py-2 px-2 sticky-col bg-white">
                         <div className="flex items-center gap-2">
                           <Avatar name={a.emp.full_name || ''} size="sm" />
                           <div>

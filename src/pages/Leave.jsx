@@ -617,7 +617,7 @@ export default function Leave({ lang }) {
 
           {/* Requests Table */}
           <Card>
-            <Table columns={requestColumns} data={filteredRequests} emptyText={t('noData', lang)} />
+            <Table columns={requestColumns} data={filteredRequests} emptyText={t('noData', lang)} minWidth="800px" stickyFirstCol />
           </Card>
 
           {/* Leave Distribution Chart */}
@@ -650,7 +650,7 @@ export default function Leave({ lang }) {
       {/* Leave Balances Tab */}
       {activeTab === 'balances' && (
         <Card>
-          <Table columns={balanceColumns} data={companyFilteredBalances} emptyText={t('noData', lang)} />
+          <Table columns={balanceColumns} data={companyFilteredBalances} emptyText={t('noData', lang)} minWidth="700px" stickyFirstCol />
         </Card>
       )}
 

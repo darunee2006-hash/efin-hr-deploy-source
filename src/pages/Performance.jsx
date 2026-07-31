@@ -958,12 +958,12 @@ export default function Performance({ lang }) {
             </Section>
 
             <Section title={lang === 'th' ? 'รายชื่อพนักงาน' : 'Employee List'}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-scroll-bounded">
+                <table className="w-full text-sm min-w-[1000px]">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="px-4 py-2 text-left font-semibold text-gray-700 text-xs">{lang === 'th' ? 'ลำดับ' : 'No.'}</th>
-                      <th className="px-4 py-2 text-left font-semibold text-gray-700 text-xs">{lang === 'th' ? 'ชื่อ-นามสกุล' : 'Name'}</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700 text-xs sticky-col bg-gray-50">{lang === 'th' ? 'ชื่อ-นามสกุล' : 'Name'}</th>
                       <th className="px-4 py-2 text-left font-semibold text-gray-700 text-xs">{lang === 'th' ? 'แผนก' : 'Department'}</th>
                       <th className="px-4 py-2 text-center font-semibold text-gray-700 text-xs">{lang === 'th' ? 'คะแนนหัวหน้า' : 'Boss Score'}</th>
                       <th className="px-4 py-2 text-center font-semibold text-gray-700 text-xs">{lang === 'th' ? 'คะแนนตนเอง' : 'Self Score'}</th>
@@ -976,7 +976,7 @@ export default function Performance({ lang }) {
                     {employeeList.map((emp, idx) => (
                       <tr key={emp.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-gray-600">{idx + 1}</td>
-                        <td className="px-4 py-3"><div className="flex items-center gap-2"><Avatar name={emp.full_name} size="sm" /><div><p className="font-medium text-gray-900">{emp.full_name}</p><p className="text-xs text-gray-500">{emp.employee_code}</p></div></div></td>
+                        <td className="px-4 py-3 sticky-col bg-white"><div className="flex items-center gap-2"><Avatar name={emp.full_name} size="sm" /><div><p className="font-medium text-gray-900">{emp.full_name}</p><p className="text-xs text-gray-500">{emp.employee_code}</p></div></div></td>
                         <td className="px-4 py-3 text-gray-600 text-sm">{emp.department}</td>
                         <td className="px-4 py-3 text-center font-medium text-gray-900">{emp.boss_score.toFixed(2)}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{emp.self_score.toFixed(2)}</td>

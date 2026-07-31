@@ -655,12 +655,12 @@ export default function Payroll({ lang }) {
 
           {/* Payroll Details Table */}
           <Section title={T(lang, 'รายละเอียดเงินเดือน', 'Payroll Details')}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="table-scroll-bounded">
+              <table className="w-full text-sm min-w-[1300px]">
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="text-left px-2 py-2 font-semibold text-gray-700">{T(lang, 'ลำดับ', '#')}</th>
-                    <th className="text-left px-2 py-2 font-semibold text-gray-700">{T(lang, 'ชื่อ-นามสกุล', 'Name')}</th>
+                    <th className="text-left px-2 py-2 font-semibold text-gray-700 sticky-col bg-white">{T(lang, 'ชื่อ-นามสกุล', 'Name')}</th>
                     <th className="text-right px-2 py-2 font-semibold text-gray-700">{T(lang, 'อายุงาน', 'Yrs')}</th>
                     <th className="text-right px-2 py-2 font-semibold text-gray-700">{T(lang, 'เงินเดือน', 'Salary')}</th>
                     <th className="text-right px-2 py-2 font-semibold text-gray-700">{T(lang, 'ประกันสังคม', 'SSO')}</th>
@@ -684,7 +684,7 @@ export default function Payroll({ lang }) {
                     return (
                       <tr key={item.employee_id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="px-2 py-2 text-gray-600">{idx + 1}</td>
-                        <td className="px-2 py-2">
+                        <td className="px-2 py-2 sticky-col bg-white">
                           <div className="flex items-center gap-2">
                             <Avatar name={empName} size="sm" />
                             <div>

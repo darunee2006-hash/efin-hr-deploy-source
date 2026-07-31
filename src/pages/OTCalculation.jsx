@@ -514,12 +514,12 @@ export default function OTCalculation({ lang = 'th' }) {
           ) : records.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 48, color: OA.muted }}>ไม่มีรายการ OT</div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <div className="table-scroll-bounded">
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: '1300px' }}>
                 <thead>
                   <tr style={{ background: OA.bgSoft }}>
                     {['วันที่', 'พนักงาน', 'บริษัท', 'เวลา', 'ประเภทวัน', 'ชม.สุทธิ', 'OT 1.5x', 'OT 3x', 'รวม (฿)', 'สถานะ', ''].map(h => (
-                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: 11, color: OA.muted, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{h}</th>
+                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: 11, color: OA.muted, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap', ...(h === 'พนักงาน' ? { position: 'sticky', left: 0, zIndex: 15, background: OA.bgSoft } : {}) }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -527,7 +527,7 @@ export default function OTCalculation({ lang = 'th' }) {
                   {records.map((r, i) => (
                     <tr key={r.id} style={{ borderBottom: `1px solid ${OA.border}`, background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
                       <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', color: OA.text }}>{r.ot_date}</td>
-                      <td style={{ padding: '10px 12px', fontWeight: 600 }}>{r.emp_name}</td>
+                      <td style={{ padding: '10px 12px', fontWeight: 600, position: 'sticky', left: 0, zIndex: 5, background: i % 2 === 0 ? '#fff' : '#fafafa' }}>{r.emp_name}</td>
                       <td style={{ padding: '10px 12px', color: OA.muted }}>{r.company_code}</td>
                       <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', color: OA.muted }}>{r.start_time?.slice(0, 5)} – {r.end_time?.slice(0, 5)}</td>
                       <td style={{ padding: '10px 12px' }}><DayBadge type={r.day_type} /></td>

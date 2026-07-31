@@ -669,8 +669,8 @@ export default function Offboarding() {
               <p className="text-gray-400 text-sm">ไม่พบข้อมูล</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="table-scroll">
+              <table className="w-full min-w-[1000px]">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
                     {['ประเภท','เดือน','ชื่อ-สกุล','ฝ่ายงาน','บริษัท','วันทำงานสุดท้าย','สถานะ',''].map((h, i) => (

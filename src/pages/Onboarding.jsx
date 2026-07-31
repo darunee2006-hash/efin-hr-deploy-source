@@ -266,11 +266,11 @@ export default function Onboarding({ lang = 'en' }) {
         {filtered.length === 0 ? (
           <div className="p-8 text-center text-gray-500">{getLabel('noData', lang)}</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full text-sm min-w-[900px]">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700 sticky-col bg-gray-50">
                     {getLabel('employeeName', lang)}
                   </th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">

@@ -589,11 +589,11 @@ export default function Expenses({ lang }) {
             ) : filteredExpenses.length === 0 ? (
               <div className="p-8 text-center text-gray-500">{T(lang, 'ไม่มีข้อมูล', 'No data')}</div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-scroll">
+                <table className="w-full text-sm min-w-[900px]">
                   <thead>
                     <tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">{T(lang, 'พนักงาน', 'Employee')}</th>
+                      <th className="px-4 py-3 text-left font-semibold text-gray-700 sticky-col bg-gray-50">{T(lang, 'พนักงาน', 'Employee')}</th>
                       <th className="px-4 py-3 text-left font-semibold text-gray-700">{T(lang, 'ประเภท', 'Type')}</th>
                       <th className="px-4 py-3 text-left font-semibold text-gray-700">{T(lang, 'รายละเอียด', 'Description')}</th>
                       <th className="px-4 py-3 text-right font-semibold text-gray-700">{T(lang, 'จำนวน', 'Amount')}</th>
@@ -609,7 +609,7 @@ export default function Expenses({ lang }) {
                       const statusInfo = STATUS_LABELS[exp.status] || STATUS_LABELS.draft
                       return (
                         <tr key={exp.id} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3 sticky-col bg-white">
                             <div className="flex items-center gap-2">
                               <Avatar name={getEmployeeName(empInfo)} size="sm" />
                               <div className="text-xs">

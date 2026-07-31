@@ -57,23 +57,24 @@ function InactiveTable({ employees, total, searchTerm, onSelect, selectedId, vis
       </button>
 
       {open && (
-        <div className="overflow-x-auto">
+        <div className="table-scroll">
           {employees.length === 0 ? (
             <p className="text-center text-gray-400 py-8 text-sm">ไม่พบข้อมูล</p>
           ) : (
-            <table className="w-full text-sm border-collapse">
+            <table className="w-full text-sm border-collapse min-w-[1600px]">
               <thead>
                 <tr className="border-b border-red-100 bg-red-50/60">
                   {allColumns.filter(c => visibleColumns.includes(c.key)).map(col => (
-                    <th key={col.key} className="px-4 py-3 text-left font-semibold text-red-400 whitespace-nowrap text-xs uppercase tracking-wide">{col.label}</th>
+                    <th key={col.key} className={`px-4 py-3 text-left font-semibold text-red-400 whitespace-nowrap text-xs uppercase tracking-wide ${col.key === 'employee_code' ? 'sticky-col bg-red-50 w-[130px]' : col.key === 'name' ? 'sticky-col bg-red-50 left-[130px]' : ''}`}>{col.label}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {employees.map(emp => {
+                  const rowBg = selectedId === emp.id ? 'bg-red-50' : 'bg-white';
                   const cellMap = {
-                    employee_code: <td key="employee_code" className="px-4 py-3 text-gray-500 font-mono text-xs">{emp.employee_code}</td>,
-                    name: <td key="name" className="px-4 py-3"><div className="flex items-center gap-2"><Avatar name={getEmployeeName(emp)} size="sm" /><span className="text-gray-500">{getEmployeeName(emp)}</span></div></td>,
+                    employee_code: <td key="employee_code" className={`px-4 py-3 text-gray-500 font-mono text-xs sticky-col w-[130px] ${rowBg}`}>{emp.employee_code}</td>,
+                    name: <td key="name" className={`px-4 py-3 sticky-col left-[130px] ${rowBg}`}><div className="flex items-center gap-2"><Avatar name={getEmployeeName(emp)} size="sm" /><span className="text-gray-500">{getEmployeeName(emp)}</span></div></td>,
                     national_id: <td key="national_id" className="px-4 py-3 text-gray-400 text-xs font-mono">{emp.national_id || '-'}</td>,
                     date_of_birth: <td key="date_of_birth" className="px-4 py-3 text-gray-400 text-xs">{formatThaiDate(emp.date_of_birth)}</td>,
                     address: <td key="address" className="px-4 py-3 text-gray-400 text-xs max-w-[200px] truncate">{emp.address || '-'}</td>,
@@ -784,21 +785,22 @@ export default function Employees({ lang }) {
             <p>ไม่พบข้อมูลพนักงาน</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
+          <div className="table-scroll-bounded">
+            <table className="w-full text-sm border-collapse min-w-[1600px]">
               <thead>
                 <tr className="border-b border-[#c6e8a3] bg-[#f0f9e8]">
                   {allColumns.filter(c => visibleColumns.includes(c.key)).map(col => (
-                    <th key={col.key} className="px-4 py-3 text-left font-semibold text-[#5a9030] whitespace-nowrap text-xs uppercase tracking-wide">{col.label}</th>
+                    <th key={col.key} className={`px-4 py-3 text-left font-semibold text-[#5a9030] whitespace-nowrap text-xs uppercase tracking-wide ${col.key === 'employee_code' ? 'sticky-col bg-[#f0f9e8] w-[130px]' : col.key === 'name' ? 'sticky-col bg-[#f0f9e8] left-[130px]' : ''}`}>{col.label}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filteredEmployees.map((emp) => {
                   const dept = departments.find(d => d.id === emp.department_id);
+                  const rowBg = selectedEmployee?.id === emp.id ? 'bg-[#f0f9e8]' : 'bg-white';
                   const cellMap = {
-                    employee_code: <td key="employee_code" className="px-4 py-3 text-gray-700 font-medium font-mono text-xs">{emp.employee_code}</td>,
-                    name: <td key="name" className="px-4 py-3"><div className="flex items-center gap-2"><Avatar name={getEmployeeName(emp)} size="sm" /><span className="text-gray-800">{getEmployeeName(emp)}</span></div></td>,
+                    employee_code: <td key="employee_code" className={`px-4 py-3 text-gray-700 font-medium font-mono text-xs sticky-col w-[130px] ${rowBg}`}>{emp.employee_code}</td>,
+                    name: <td key="name" className={`px-4 py-3 sticky-col left-[130px] ${rowBg}`}><div className="flex items-center gap-2"><Avatar name={getEmployeeName(emp)} size="sm" /><span className="text-gray-800">{getEmployeeName(emp)}</span></div></td>,
                     national_id: <td key="national_id" className="px-4 py-3 text-gray-600 text-xs font-mono">{emp.national_id || '-'}</td>,
                     date_of_birth: <td key="date_of_birth" className="px-4 py-3 text-gray-600 text-xs">{formatThaiDate(emp.date_of_birth)}</td>,
                     address: <td key="address" className="px-4 py-3 text-gray-600 text-xs max-w-[200px] truncate">{emp.address || '-'}</td>,

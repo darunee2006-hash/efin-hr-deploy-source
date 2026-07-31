@@ -353,19 +353,19 @@ function TeamTab({ data }) {
         <span className="text-xs text-gray-400">แสดง {filtered.length} / {data.length} คน</span>
       </div>
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+        <div className="table-scroll-bounded">
+          <table className="w-full text-xs min-w-[1500px]">
             <thead className="bg-gray-50">
               <tr>{['#','ชื่อ','ชื่อเล่น','ตำแหน่ง','BU','ฝ่าย','ชม./สัปดาห์','SG','Opt Yes','CR','Backup','เสี่ยง','ดู'].map(h=>(
-                <th key={h} className="text-left py-2 px-2 text-gray-500 font-medium whitespace-nowrap">{h}</th>
+                <th key={h} className={`text-left py-2 px-2 text-gray-500 font-medium whitespace-nowrap ${h==='ชื่อ' ? 'sticky-col bg-gray-50 w-[160px]' : h==='ชื่อเล่น' ? 'sticky-col bg-gray-50 left-[160px]' : ''}`}>{h}</th>
               ))}</tr>
             </thead>
             <tbody>
               {filtered.map((d, i) => (
                 <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-2 px-2 text-gray-400">{i+1}</td>
-                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap">{d.name}</td>
-                  <td className="py-2 px-2 text-gray-400">{d.nick}</td>
+                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap sticky-col bg-white w-[160px]">{d.name}</td>
+                  <td className="py-2 px-2 text-gray-400 sticky-col bg-white left-[160px]">{d.nick}</td>
                   <td className="py-2 px-2 text-gray-600 max-w-36 truncate">{d.pos}</td>
                   <td className="py-2 px-2">
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-medium" style={{ background: (BUS[d.bu]?.color||'#9ca3af')+'22', color: BUS[d.bu]?.color||'#374151' }}>
@@ -444,16 +444,16 @@ function ManpowerTab({ data }) {
       </div>
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-3 border-b border-gray-100"><h3 className="text-sm font-semibold text-gray-800">รายการคำขอ Optimize / เพิ่มกำลังคน</h3></div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+        <div className="table-scroll">
+          <table className="w-full text-xs min-w-[1200px]">
             <thead className="bg-gray-50"><tr>{['#','ชื่อ','BU','ฝ่าย','ชม./สัปดาห์','Opt Yes','Opt Maybe','Score','เสี่ยง','ข้อเสนอแนะ'].map(h=>(
-              <th key={h} className="text-left py-2 px-2 text-gray-500 font-medium whitespace-nowrap">{h}</th>
+              <th key={h} className={`text-left py-2 px-2 text-gray-500 font-medium whitespace-nowrap ${h==='ชื่อ' ? 'sticky-col bg-gray-50' : ''}`}>{h}</th>
             ))}</tr></thead>
             <tbody>
               {requests.map((d, i) => (
                 <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-2 px-2 text-gray-400">{i+1}</td>
-                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap">{d.name}</td>
+                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap sticky-col bg-white">{d.name}</td>
                   <td className="py-2 px-2"><span className="px-1.5 py-0.5 rounded text-[10px]" style={{ background: (BUS[d.bu]?.color||'#9ca3af')+'22', color: BUS[d.bu]?.color||'#374151' }}>{d.bu}</span></td>
                   <td className="py-2 px-2 text-gray-500 max-w-28 truncate">{d.dept}</td>
                   <td className="py-2 px-2 text-center font-medium"><span className={d.hrs>60?'text-red-600':d.hrs>45?'text-orange-500':'text-gray-700'}>{d.hrs}</span></td>
@@ -516,12 +516,13 @@ function SkillTab({ data }) {
       </div>
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-3 border-b border-gray-100"><h3 className="text-sm font-semibold text-gray-800">รายชื่อผู้มี Skill Gap</h3></div>
-        <table className="w-full text-xs">
-          <thead className="bg-gray-50"><tr>{['ชื่อ','BU','ฝ่าย','Skill Gap','ข้อเสนอ IDP'].map(h=><th key={h} className="text-left py-2 px-3 text-gray-500">{h}</th>)}</tr></thead>
+        <div className="table-scroll">
+        <table className="w-full text-xs min-w-[700px]">
+          <thead className="bg-gray-50"><tr>{['ชื่อ','BU','ฝ่าย','Skill Gap','ข้อเสนอ IDP'].map(h=><th key={h} className={`text-left py-2 px-3 text-gray-500 ${h==='ชื่อ' ? 'sticky-col bg-gray-50' : ''}`}>{h}</th>)}</tr></thead>
           <tbody>
             {withGap.map(d => (
               <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50">
-                <td className="py-2 px-3 font-medium text-gray-700">{d.name}</td>
+                <td className="py-2 px-3 font-medium text-gray-700 sticky-col bg-white">{d.name}</td>
                 <td className="py-2 px-3"><span className="px-1.5 py-0.5 rounded text-[10px]" style={{ background: (BUS[d.bu]?.color||'#9ca3af')+'22', color: BUS[d.bu]?.color||'#374151' }}>{d.bu}</span></td>
                 <td className="py-2 px-3 text-gray-500">{d.dept}</td>
                 <td className="py-2 px-3"><div className="flex gap-0.5">{Array(d.sg).fill(0).map((_,i)=><span key={i} className="w-3 h-3 rounded-full bg-red-400 inline-block" />)}</div></td>
@@ -530,6 +531,7 @@ function SkillTab({ data }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )
@@ -585,10 +587,10 @@ function CriticalTab({ data }) {
       </div>
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-3 border-b border-gray-100"><h3 className="text-sm font-semibold text-gray-800">รายการ Critical Role ทั้งหมด</h3></div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+        <div className="table-scroll">
+          <table className="w-full text-xs min-w-[1000px]">
             <thead className="bg-gray-50"><tr>
-              <SortTh col="name"    label="ชื่อ" />
+              <SortTh col="name"    label="ชื่อ" className="sticky-col bg-gray-50" />
               <SortTh col="bu"      label="BU" />
               <SortTh col="dept"    label="ฝ่าย" />
               <SortTh col="hrs"     label="ชม./สัปดาห์" className="text-center" />
@@ -600,7 +602,7 @@ function CriticalTab({ data }) {
             <tbody>
               {critical.map(d => (
                 <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50">
-                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap">{d.name}</td>
+                  <td className="py-2 px-2 font-medium text-gray-700 whitespace-nowrap sticky-col bg-white">{d.name}</td>
                   <td className="py-2 px-2"><span className="px-1.5 py-0.5 rounded text-[10px]" style={{ background: (BUS[d.bu]?.color||'#9ca3af')+'22', color: BUS[d.bu]?.color||'#374151' }}>{d.bu}</span></td>
                   <td className="py-2 px-2 text-gray-500 max-w-28 truncate">{d.dept}</td>
                   <td className="py-2 px-2 text-center font-medium"><span className={d.hrs>60?'text-red-600':d.hrs>45?'text-orange-500':'text-gray-700'}>{d.hrs}</span></td>

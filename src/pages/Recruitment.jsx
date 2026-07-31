@@ -1256,8 +1256,8 @@ export default function Recruitment({ lang }) {
                 ตำแหน่งงานที่เปิดรับ
               </SectionTitle>
             </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <div className="table-scroll">
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: '900px' }}>
                 <thead>
                   <tr style={{ background: OA.bgSoft }}>
                     {['Requisition ID', 'ตำแหน่ง', 'ฝ่าย', 'Recruiter', 'อัตรา', 'SLA', 'สถานะ'].map(h => (

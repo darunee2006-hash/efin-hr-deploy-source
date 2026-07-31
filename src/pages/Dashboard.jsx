@@ -197,9 +197,9 @@ function SlidePanel({ panel, onClose }) {
 
         {/* table */}
         <div className="flex-1 overflow-y-auto">
-          <div className="overflow-x-auto">
+          <div className="table-scroll">
           <table className="w-full text-xs">
-            <thead className="sticky top-0 bg-white border-b border-gray-100 z-10 shadow-sm">
+            <thead className="bg-white border-b border-gray-100 shadow-sm">
               <tr>
                 <th className="text-left px-4 py-2.5 text-gray-400 font-medium w-8">#</th>
                 {[
@@ -216,7 +216,8 @@ function SlidePanel({ panel, onClose }) {
                     onClick={() => handleSort(col.key)}
                     className={`px-4 py-2.5 text-gray-500 font-medium cursor-pointer select-none
                       hover:text-[#78c045] transition-colors whitespace-nowrap
-                      ${col.align === 'right' ? 'text-right' : 'text-left'}`}
+                      ${col.align === 'right' ? 'text-right' : 'text-left'}
+                      ${col.key === 'name' ? 'sticky-col bg-white' : ''}`}
                   >
                     {col.label}<SortIcon col={col.key} />
                   </th>
@@ -243,7 +244,7 @@ function SlidePanel({ panel, onClose }) {
                 return (
                   <tr key={e.id || i} className="hover:bg-blue-50/50 transition-colors">
                     <td className="px-4 py-2.5 text-gray-300">{i + 1}</td>
-                    <td className="px-4 py-2.5">
+                    <td className="px-4 py-2.5 sticky-col bg-white">
                       <div className="flex items-center gap-2">
                         <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
                           {initial}
@@ -386,8 +387,8 @@ function DonutWithTable({ title, data, colors, total, colLabel = 'ฝ่าย',
         </div>
 
         {/* Table */}
-        <div className="flex-1 min-w-0 overflow-x-auto">
-          <table className="w-full text-xs">
+        <div className="flex-1 min-w-0 table-scroll">
+          <table className="w-full text-xs min-w-[500px]">
             <thead>
               <tr className="border-b border-gray-100">
                 <th className="text-left pb-1.5 text-gray-500 font-medium">{colLabel}</th>
@@ -1192,7 +1193,7 @@ export default function Dashboard({ lang }) {
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
-        <div className="overflow-x-auto">
+        <div className="table-scroll">
           <table className="w-full text-sm min-w-[860px]">
             <thead>
               <tr className="border-b border-gray-100">
@@ -1208,7 +1209,7 @@ export default function Dashboard({ lang }) {
                   <th
                     key={col.key}
                     onClick={() => handleRhSort(col.key)}
-                    className={`${col.align === 'right' ? 'text-right' : 'text-left'} py-2 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-[#78c045] transition-colors whitespace-nowrap ${col.cls}`}
+                    className={`${col.align === 'right' ? 'text-right' : 'text-left'} py-2 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-[#78c045] transition-colors whitespace-nowrap ${col.cls} ${col.key === 'name' ? 'sticky-col bg-white' : ''}`}
                   >
                     {col.label}
                     {rhSortKey === col.key
@@ -1244,7 +1245,7 @@ export default function Dashboard({ lang }) {
                     onClick={() => openPanel(name, `${e.position_th || e.position_en || '-'} | ${e.department_name_th || '-'}`, [e])}
                     className="hover:bg-blue-50 transition-colors cursor-pointer"
                   >
-                    <td className="py-3 text-gray-800 font-medium">
+                    <td className="py-3 text-gray-800 font-medium sticky-col bg-white">
                       <div className="flex items-center gap-2.5">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${avatarColors[i % avatarColors.length]}`}>
                           {initial}

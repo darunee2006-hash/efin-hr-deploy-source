@@ -1260,7 +1260,7 @@ export default function CostAnalysis(){
             <TrendingUp className="w-3.5 h-3.5"/>ต้นทุนเพิ่ม 3 เดือนต่อเนื่อง +{trendAlert.growth}%
           </div>}
         </div>
-        <div className="overflow-x-auto"><table className="w-full text-sm">
+        <div className="table-scroll"><table className="w-full text-sm min-w-[700px]">
           <thead className="bg-gray-50"><tr>
             <th className="px-3 py-2 text-left font-medium text-gray-600">เดือน</th>
             <th className="px-3 py-2 text-right font-medium text-gray-600">ต้นทุนรวม (฿)</th>
@@ -1314,7 +1314,7 @@ export default function CostAnalysis(){
             </div>
           </button>
           {isOpen && <div className="border-t border-gray-100 px-5 py-4">
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="table-scroll"><table className="w-full text-sm min-w-[700px]">
               <thead className="bg-gray-50"><tr>
                 <th className="px-3 py-2 text-left font-medium text-gray-600">รหัส</th>
                 <th className="px-3 py-2 text-left font-medium text-gray-600">Product / Cost Center</th>
@@ -1384,7 +1384,7 @@ export default function CostAnalysis(){
                 <span className="font-bold text-gray-800 text-sm">฿{fmt(Math.round(buCost))}</span>
               </div>
             </div>
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="table-scroll"><table className="w-full text-sm min-w-[800px]">
               <thead className="bg-gray-50/50"><tr>
                 <th className="px-3 py-2 text-left font-medium text-gray-600">รหัส</th>
                 <th className="px-3 py-2 text-left font-medium text-gray-600">ชื่อ</th>
@@ -1438,10 +1438,10 @@ export default function CostAnalysis(){
         <span className="text-sm text-gray-500">{empDetail.length} คน</span>
       </div>
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto"><table className="w-full text-sm">
+        <div className="table-scroll-bounded"><table className="w-full text-sm min-w-[1400px]">
           <thead className="bg-gray-50"><tr>
             <th className="px-3 py-2 text-left font-medium text-gray-600">รหัส</th>
-            <th className="px-3 py-2 text-left font-medium text-gray-600">ชื่อ-นามสกุล</th>
+            <th className="px-3 py-2 text-left font-medium text-gray-600 sticky-col bg-gray-50">ชื่อ-นามสกุล</th>
             <th className="px-3 py-2 text-left font-medium text-gray-600">ตำแหน่ง</th>
             <th className="px-3 py-2 text-left font-medium text-gray-600">แผนก</th>
             <th className="px-3 py-2 text-left font-medium text-gray-600">บริษัท</th>
@@ -1458,7 +1458,7 @@ export default function CostAnalysis(){
             const statusColor=e.status==='active'?'bg-green-100 text-green-700':e.status==='inactive'?'bg-red-100 text-red-700':'bg-gray-100 text-gray-600'
             return <tr key={e.id} className="border-t border-gray-100 hover:bg-gray-50">
               <td className="px-3 py-1.5 text-xs font-mono text-[#7DC242]">{e.employee_code}</td>
-              <td className="px-3 py-1.5 text-gray-700 font-medium whitespace-nowrap">{`${e.prefix_th||''}${e.first_name_th||''} ${e.last_name_th||''}`.trim()}</td>
+              <td className="px-3 py-1.5 text-gray-700 font-medium whitespace-nowrap sticky-col bg-white">{`${e.prefix_th||''}${e.first_name_th||''} ${e.last_name_th||''}`.trim()}</td>
               <td className="px-3 py-1.5 text-gray-500 text-xs truncate max-w-[150px]">{e.position_th||'-'}</td>
               <td className="px-3 py-1.5 text-gray-500 text-xs truncate max-w-[150px]">{deptLookup[e.department_id]||'-'}</td>
               <td className="px-3 py-1.5 text-xs">{e.company_entity ? <span className="px-1.5 py-0.5 rounded bg-[#f0fce8] text-[#5A9020] whitespace-nowrap">{e.company_entity}</span> : '-'}</td>
@@ -1538,8 +1538,8 @@ export default function CostAnalysis(){
           <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">แยกตามบริษัท</p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full text-sm min-w-[1200px]">
               <thead className="bg-gray-50"><tr>
                 <th className="px-4 py-2 text-left font-medium text-gray-600">บริษัท</th>
                 <th className="px-4 py-2 text-right font-medium text-gray-600">คน</th>
@@ -1585,8 +1585,8 @@ export default function CostAnalysis(){
           <div className="px-5 py-3 bg-gray-50 border-t border-b border-gray-100">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">แยกตามแผนก</p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full text-sm min-w-[1300px]">
               <thead className="bg-gray-50"><tr>
                 <th className="px-4 py-2 text-left font-medium text-gray-600">แผนก</th>
                 <th className="px-4 py-2 text-left font-medium text-gray-600">บริษัท</th>
@@ -1705,8 +1705,8 @@ export default function CostAnalysis(){
               </div>
             </div>
 
-            {isExpanded && <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            {isExpanded && <div className="table-scroll">
+              <table className="w-full text-sm min-w-[900px]">
                 <thead className="bg-gray-50"><tr>
                   <th className="px-4 py-2 text-left font-medium text-gray-600">Product</th>
                   <th className="px-4 py-2 text-right font-medium text-gray-600">ชม.</th>
@@ -2229,8 +2229,8 @@ function CcAllocTab({ data, loading, filterMonth, setFilterMonth, filterBU, setF
         <h3 className="font-semibold text-gray-800">สรุปต้นทุนตาม BU Group</h3>
         <span className="ml-auto text-xs text-gray-400">{buSummary.length} BU</span>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="table-scroll">
+        <table className="w-full text-sm min-w-[700px]">
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">#</th>
@@ -2279,8 +2279,8 @@ function CcAllocTab({ data, loading, filterMonth, setFilterMonth, filterBU, setF
         <Table2 className="w-5 h-5 text-[#7DC242]"/>
         <h3 className="font-semibold text-gray-800">ต้นทุนตาม BU × เดือน</h3>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="table-scroll">
+        <table className="w-full text-sm min-w-[900px]">
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 whitespace-nowrap">BU Group</th>
@@ -2321,11 +2321,11 @@ function CcAllocTab({ data, loading, filterMonth, setFilterMonth, filterBU, setF
         <h3 className="font-semibold text-gray-800">รายละเอียดรายพนักงาน</h3>
         <span className="ml-auto text-xs text-gray-400">{detailRows.length} รายการ</span>
       </div>
-      <div className="overflow-auto max-h-[520px]">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-gray-50 z-10">
+      <div className="table-scroll-bounded">
+        <table className="w-full text-sm min-w-[1400px]">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-8">#</th>
+              <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-8 sticky-col bg-gray-50">#</th>
               {[
                 {key:'month',label:'เดือน'},
                 {key:'employee_code',label:'รหัส'},
@@ -2339,7 +2339,7 @@ function CcAllocTab({ data, loading, filterMonth, setFilterMonth, filterBU, setF
                 {key:'direct_cost',label:'ต้นทุนตรง',align:'right'},
               ].map(col=>(
                 <th key={col.key} onClick={()=>toggleSort(col.key)}
-                  className={`${col.align==='right'?'text-right':'text-left'} px-4 py-2.5 text-xs font-semibold text-gray-500 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap`}>
+                  className={`${col.align==='right'?'text-right':'text-left'} px-4 py-2.5 text-xs font-semibold text-gray-500 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap ${col.key==='month'?'sticky-col bg-gray-50 left-8 w-[70px]':col.key==='employee_code'?'sticky-col bg-gray-50 left-[102px] w-[90px]':col.key==='employee_name'?'sticky-col bg-gray-50 left-[192px] w-[150px]':''}`}>
                   {col.label}{sortCol===col.key?(sortAsc?' ▲':' ▼'):''}
                 </th>
               ))}
@@ -2348,10 +2348,10 @@ function CcAllocTab({ data, loading, filterMonth, setFilterMonth, filterBU, setF
           <tbody className="divide-y divide-gray-50">
             {detailRows.map((r,i)=>(
               <tr key={i} className="hover:bg-[#f0fce8]/40">
-                <td className="px-4 py-2 text-xs text-gray-400">{i+1}</td>
-                <td className="px-4 py-2 text-xs text-gray-600">{r.month}</td>
-                <td className="px-4 py-2 text-xs text-gray-600 font-mono">{r.employee_code}</td>
-                <td className="px-4 py-2 text-gray-800 whitespace-nowrap">{r.employee_name}</td>
+                <td className="px-4 py-2 text-xs text-gray-400 sticky-col bg-white">{i+1}</td>
+                <td className="px-4 py-2 text-xs text-gray-600 sticky-col bg-white left-8 w-[70px]">{r.month}</td>
+                <td className="px-4 py-2 text-xs text-gray-600 font-mono sticky-col bg-white left-[102px] w-[90px]">{r.employee_code}</td>
+                <td className="px-4 py-2 text-gray-800 whitespace-nowrap sticky-col bg-white left-[192px] w-[150px]">{r.employee_name}</td>
                 <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap max-w-[160px] truncate" title={r.department}>{r.department}</td>
                 <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{r.bu_group||'-'}</td>
                 <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{r.cc_group||'-'}</td>

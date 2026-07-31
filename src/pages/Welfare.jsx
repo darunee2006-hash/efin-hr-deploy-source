@@ -324,8 +324,8 @@ export default function Welfare({ lang = 'th' }) {
                   <p className="text-xs mt-1">กดปุ่ม "เพิ่มสวัสดิการ" หรือนำเข้าจาก Excel</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                <div className="table-scroll">
+                  <table className="w-full text-sm min-w-[800px]">
                     <thead className="bg-gray-50 border-y border-gray-200">
                       <tr>
                         <th className="px-4 py-3 text-left font-medium text-gray-600">สวัสดิการ</th>

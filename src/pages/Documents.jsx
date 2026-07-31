@@ -378,8 +378,8 @@ export default function Documents({ lang = 'th' }) {
                 <p className="text-xs mt-1">{t.noDataSub}</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-scroll">
+                <table className="w-full text-sm min-w-[900px]">
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">{t.number}</th>
@@ -507,8 +507,8 @@ export default function Documents({ lang = 'th' }) {
         {companyFilteredEmployees.length === 0 ? (
           <p className="text-xs text-gray-400 py-4 text-center">ไม่มีข้อมูลพนักงาน</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full text-sm min-w-[600px]">
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">{t.employee}</th>

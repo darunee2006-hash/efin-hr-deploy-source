@@ -719,15 +719,15 @@ export default function UserManagement({ lang }) {
 
       {/* Table */}
       <Card>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm whitespace-nowrap">
+        <div className="table-scroll-bounded">
+          <table className="w-full text-sm whitespace-nowrap min-w-[1400px]">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="py-2.5 px-2 text-left w-8 sticky left-0 bg-gray-50/95 z-10">
+                <th className="py-2.5 px-2 text-left w-8 sticky-col bg-gray-50/95">
                   <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="rounded border-gray-300 text-[#78c045] focus:ring-[#78c045]" />
                 </th>
                 {activeColumns.map(col => (
-                  <th key={col.key} className={`py-2.5 px-2 text-left font-medium text-gray-500 text-[10px] uppercase tracking-wider cursor-pointer hover:text-[#5a9030] select-none ${col.key === 'employee_code' ? 'sticky left-8 bg-gray-50/95 z-10' : ''}`}
+                  <th key={col.key} className={`py-2.5 px-2 text-left font-medium text-gray-500 text-[10px] uppercase tracking-wider cursor-pointer hover:text-[#5a9030] select-none ${col.key === 'employee_code' ? 'sticky-col left-8 bg-gray-50/95' : ''}`}
                     onClick={() => handleSort(col.key)}>
                     {lang === 'th' ? col.thLabel : col.enLabel}
                     <SortIcon sortKey={col.key} currentSort={sort} />
@@ -742,11 +742,11 @@ export default function UserManagement({ lang }) {
                 <tr><td colSpan={activeColumns.length + 3} className="text-center py-8 text-gray-400">{L.noData}</td></tr>
               ) : filtered.map(emp => (
                 <tr key={emp.id} className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${selectedIds.has(emp.id) ? 'bg-[#f0f9e8]/50' : ''}`}>
-                  <td className="py-1.5 px-2 sticky left-0 bg-white z-10">
+                  <td className="py-1.5 px-2 sticky-col bg-white">
                     <input type="checkbox" checked={selectedIds.has(emp.id)} onChange={() => toggleSelect(emp.id)} className="rounded border-gray-300 text-[#78c045] focus:ring-[#78c045]" />
                   </td>
                   {activeColumns.map(col => (
-                    <td key={col.key} className={`py-1.5 px-2 text-xs text-gray-700 max-w-[200px] truncate ${col.key === 'employee_code' ? 'sticky left-8 bg-white z-10 font-mono text-gray-500' : ''} ${col.key === 'full_name' ? 'font-medium text-gray-900' : ''}`}
+                    <td key={col.key} className={`py-1.5 px-2 text-xs text-gray-700 max-w-[200px] truncate ${col.key === 'employee_code' ? 'sticky-col left-8 bg-white font-mono text-gray-500' : ''} ${col.key === 'full_name' ? 'font-medium text-gray-900' : ''}`}
                       title={getCellValue(emp, col.key)}>
                       {getCellValue(emp, col.key)}
                     </td>

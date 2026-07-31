@@ -646,6 +646,7 @@ export default function Assets({ lang }) {
         </div>
 
         <Table
+          minWidth="1100px"
           columns={[
             { key: 'asset_code', header: lang === 'th' ? 'รหัส' : 'Code' },
             { key: 'asset_name', header: lang === 'th' ? 'ชื่อ' : 'Name' },
