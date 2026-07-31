@@ -240,14 +240,14 @@ export function Input({ label, error, required, className: _cls, ...props }) {
   )
 }
 
-export function Table({ columns, data, onRowClick, emptyText = 'No data' }) {
+export function Table({ columns, data, onRowClick, emptyText = 'No data', minWidth, stickyFirstCol = false }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+    <div className="table-scroll">
+      <table className="w-full text-sm" style={minWidth ? { minWidth } : undefined}>
         <thead>
           <tr style={{ borderBottom: `1px solid ${OA_BORDER}` }}>
             {columns.map((col, i) => (
-              <th key={i} className="text-left py-2.5 px-3 text-xs uppercase tracking-wider whitespace-nowrap font-semibold"
+              <th key={i} className={`text-left py-2.5 px-3 text-xs uppercase tracking-wider whitespace-nowrap font-semibold ${stickyFirstCol && i === 0 ? 'sticky-col bg-white' : ''}`}
                 style={{ color: OA_TEXT_SEC }}>
                 {col.header}
               </th>
@@ -272,7 +272,7 @@ export function Table({ columns, data, onRowClick, emptyText = 'No data' }) {
                 onMouseLeave={e => { if (onRowClick) e.currentTarget.style.backgroundColor = '' }}
               >
                 {columns.map((col, j) => (
-                  <td key={j} className="py-2.5 px-3 whitespace-nowrap" style={{ color: OA_TEXT }}>
+                  <td key={j} className={`py-2.5 px-3 whitespace-nowrap ${stickyFirstCol && j === 0 ? 'sticky-col bg-white' : ''}`} style={{ color: OA_TEXT }}>
                     {col.render ? col.render(row) : row[col.key]}
                   </td>
                 ))}
